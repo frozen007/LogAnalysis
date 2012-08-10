@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log-analysis>
+
+    <analysis-worker>
+        <script-exec>D:/lab/Perl/bin/perl.exe</script-exec>
+        <script-file>D:/mydoc/work/loganalisys/loganalysis/script/loganalisys.pl</script-file>
+        <thread-pool-size>20</thread-pool-size>
+    </analysis-worker>
+
+    <profile name="resin">
+        <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>us</log-costunit>
+    </profile>
+
+    <profile name="apache">
+        <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>us</log-costunit>
+    </profile>
+
+    <profile name="nginx">
+        <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot%otherquot %otherquot %otherquot %otherquot %otherquot %costquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>s</log-costunit>
+    </profile>
+
+    <log-config name="nginx" profile="nginx" parent-path="D:/mydoc/work/loganalisys/log/nginxlog">
+        <log file="'154_138/member_acc_log_'yyyy-MM-dd" err-file="" memo="memeber"/>
+
+        <log file="'154_113/protect_acc_log_'yyyy-MM-dd" err-file="" memo="protect"/>
+        <!-- 
+        <log file="64_36/auth_acc_log_yyyy-MM-dd" err-file="" memo="auth"/>
+        <log file="55_35/bbs.access.log" err-file="" memo="bbs"/>
+         -->
+    </log-config>
+</log-analysis>
