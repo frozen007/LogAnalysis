@@ -64,10 +64,10 @@ public class AnalysisWorker implements Runnable {
             statistic = new LogStatistic(servername, resultMap);
 
             logger.info("Analysis completed for log file:" + logfile);
+            LogAnalysisCountDown.getInstance().countDown();
         } catch (Exception e) {
             logger.error("error when analyzing log file:" + logfile, e);
         }
-
     }
 
     public LogStatistic getStatistic() {

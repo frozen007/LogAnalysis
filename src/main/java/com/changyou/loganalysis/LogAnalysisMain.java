@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
@@ -43,7 +45,7 @@ public class LogAnalysisMain {
         LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
 
         int threadpoolSize = config.getThreadPoolSize();
-        LogAnalysisExecutor executor = new LogAnalysisExecutor(threadpoolSize);
+        ExecutorService executor = Executors.newFixedThreadPool(threadpoolSize);
 
         ArrayList<AnalysisWorker> workerList = new ArrayList<AnalysisWorker>();
 
@@ -85,15 +87,22 @@ public class LogAnalysisMain {
                                                            logcostunit,
                                                            errfileStr);
 
-                executor.dispatch(worker);
                 workerList.add(worker);
             }
         }
-        logger.info("LogAnalysis Begins");
-        executor.start();
-        executor.waitForFinish();
 
-        String resultFile = "analysis_" + sdf.format(analysisDate) + ".csv";
+        LogAnalysisCountDown countDownMonitor = LogAnalysisCountDown.initCountDown(workerList.size());
+
+        logger.info("LogAnalysis Begins");
+        for (AnalysisWorker worker : workerList) {
+            executor.execute(worker);
+        }
+        countDownMonitor.waitForFinish();
+
+        File resultFile = new File("analysis_" + sdf.format(analysisDate) + ".csv");
+
+        logger.info("Generating analysis result:" + resultFile.getAbsolutePath());
+
         PrintWriter writer = new PrintWriter(resultFile, "GBK");
         StringBuilder buf = new StringBuilder();
         // header
