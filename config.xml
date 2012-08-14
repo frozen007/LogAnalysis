@@ -2,8 +2,8 @@
 <log-analysis>
 
     <analysis-worker>
-        <script-exec>D:/lab/Perl/bin/perl.exe</script-exec>
-        <script-file>D:/mydoc/work/loganalisys/loganalysis/script/loganalisys.pl</script-file>
+        <script-exec>/usr/bin/perl</script-exec>
+        <script-file>/home/webadmin/loganalysis/script/loganalisys.pl</script-file>
         <thread-pool-size>20</thread-pool-size>
     </analysis-worker>
 
@@ -19,19 +19,65 @@
         <log-costunit>us</log-costunit>
     </profile>
 
-    <profile name="nginx">
+    <profile name="nginx1">
         <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot%otherquot %otherquot %otherquot %otherquot %otherquot %costquot</log-format>
         <log-separator> </log-separator>
         <log-costunit>s</log-costunit>
     </profile>
 
-    <log-config name="nginx" profile="nginx" parent-path="D:/mydoc/work/loganalisys/log/nginxlog">
+    <profile name="nginx2">
+        <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot%otherquot %otherquot%otherquot %otherquot %otherquot %costquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>s</log-costunit>
+    </profile>
+    
+    <log-config name="nginx" profile="nginx2" parent-path="/home/nginxlog">
+        <log file="'154_113/protect_acc_log_'yyyy-MM-dd" err-file="" memo="protect"/>
         <log file="'154_138/member_acc_log_'yyyy-MM-dd" err-file="" memo="memeber"/>
 
-        <log file="'154_113/protect_acc_log_'yyyy-MM-dd" err-file="" memo="protect"/>
-        <!-- 
-        <log file="64_36/auth_acc_log_yyyy-MM-dd" err-file="" memo="auth"/>
-        <log file="55_35/bbs.access.log" err-file="" memo="bbs"/>
-         -->
+        <log file="'154_145/host.access.log_'yyyyMMdd" err-file="" memo="wgapi通用对接_154_145"/>
+
+        <!--畅游论坛-->
+        <log file="'154_51/bbs.access.log.'yyyy-MM-dd" err-file="" memo="畅游论坛_154_51"/>
+        <log file="'55_35/bbs.access.log.'yyyyMMdd" err-file="" memo="畅游论坛_55_35"/>
+        <log file="'64_220/bbs.access.log.'yyyy-MM-dd" err-file="" memo="畅游论坛_64_220"/>
+
+        <!--peak-->
+        <log file="'17_55/'yyyyMMdd'.access_log'" err-file="" memo="peak_17_55"/>
+        <log file="'17_75/'yyyyMMdd'.access_log'" err-file="" memo="peak_17_75"/>
+        <log file="'64_180/'yyyyMMdd'.access_log'" err-file="" memo="peak_64_180"/>
+
+        <!--鹿鼎记论坛-->
+        <log file="'54_65/access_log.'yyyyMMdd" err-file="" memo="鹿鼎记论坛_54_65"/>
+        <log file="'55_42/access_log.'yyyyMMdd" err-file="" memo="鹿鼎记论坛_55_42"/>
+
+        <!--pay-->
+        <log file="'64_35/pay_access_log_'yyyy-MM-dd" err-file="" memo="pay_64_35"/>
+        <log file="'64_36/auth_acc_log_'yyyy-MM-dd" err-file="" memo="pay_64_36"/>
+        
+        <!--account
+        <log file="'17_209/host.access.log_'yyyyMMddxx" err-file="" memo="account_17_209"/>
+        <log file="'17_211/host.access.log_'yyyyMMddxx" err-file="" memo="account_17_211"/>
+        <log file="'64_45/host.access.log_'yyyyMMddxx" err-file="" memo="account_64_45"/>
+        <log file="'64_67/host.access.log_'yyyyMMddxx" err-file="" memo="account_64_67"/>
+        -->
+
+        <!--注册登陆系统
+        <log file="'64_13/access.log_'yyyyMMddxx" err-file="" memo="注册登陆系统_64_13"/>
+        -->
+
+        <!--sso
+        <log file="'64_133/host.access.log_'yyyyMMddxx" err-file="" memo="sso_64_133"/>
+        <log file="'64_134/host.access.log_'yyyyMMddxx" err-file="" memo="sso_64_134"/>
+        -->
+
+        <!--活动系统
+        <log file="'64_175/host.access.log_'yyyyMMddxx" err-file="" memo="活动系统_64_175"/>
+        <log file="'64_176/host.access.log_'yyyyMMddxx" err-file="" memo="活动系统_64_176"/>
+        -->
+
+        <!--auth-->
+        <log file="'64_36/auth_acc_log_'yyyy-MM-dd" err-file="" memo="auth_64_36"/>
+
     </log-config>
 </log-analysis>
