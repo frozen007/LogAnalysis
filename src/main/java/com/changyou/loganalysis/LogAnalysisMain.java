@@ -65,6 +65,7 @@ public class LogAnalysisMain {
                 logfileStr = logfileStr.replace('\\', '/');
                 File logFile = new File(logfileStr);
                 if (!logFile.exists() || logFile.isDirectory()) {
+                    logger.info("file not exists:"+logfileStr);
                     continue;
                 }
 
@@ -114,27 +115,27 @@ public class LogAnalysisMain {
             buf
                .append(statistic.cost0_1s)
                .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost0_1s / statistic.totalrecord, 2))
+               .append(LogAnalysisUtil.round((double) statistic.cost0_1s / statistic.totalrecord, 4))
                .append(",");
             buf
                .append(statistic.cost1_3s)
                .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost1_3s / statistic.totalrecord, 2))
+               .append(LogAnalysisUtil.round((double) statistic.cost1_3s / statistic.totalrecord, 4))
                .append(",");
             buf
                .append(statistic.cost3_10s)
                .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost3_10s / statistic.totalrecord, 2))
+               .append(LogAnalysisUtil.round((double) statistic.cost3_10s / statistic.totalrecord, 4))
                .append(",");
             buf
                .append(statistic.cost10s)
                .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost10s / statistic.totalrecord, 2))
+               .append(LogAnalysisUtil.round((double) statistic.cost10s / statistic.totalrecord, 4))
                .append(",");
             buf
                .append(statistic.status500)
                .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.status500 / statistic.totalrecord, 2))
+               .append(LogAnalysisUtil.round((double) statistic.status500 / statistic.totalrecord, 4))
                .append(",");
             buf.append(statistic.exceptioncnt).append(",");
             buf.append(statistic.logfile);

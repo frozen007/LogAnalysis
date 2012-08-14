@@ -35,7 +35,7 @@ while(<LOG>) {
     print "line:$totalrecord", ", cost:$cost\n"; 
 
 	if($totalrecord > 20) {
-        last;
+#        last;
 	}
         
 
