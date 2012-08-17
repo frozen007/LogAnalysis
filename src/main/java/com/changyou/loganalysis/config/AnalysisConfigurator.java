@@ -14,16 +14,33 @@ public class AnalysisConfigurator {
 
     private LogAnalysisConfig config = null;
 
-    public AnalysisConfigurator() {
+    private AnalysisConfigurator() {
+        this(XML_CONFIG_FILE);
+    }
+
+    private AnalysisConfigurator(String configFile) {
         try {
-            init();
+            init(configFile);
         } catch (Exception e) {
             logger.error("error when loading config", e);
         }
     }
 
-    private void init() throws Exception {
-        config = digestConfig(XML_CONFIG_FILE);
+    private void init(String configFile) throws Exception {
+        config = digestConfig(configFile);
+    }
+
+    public static AnalysisConfigurator getInstance(String configFile) {
+        if (configInstance == null) {
+            synchronized (AnalysisConfigurator.class) {
+                if (configInstance == null) {
+                    configInstance = new AnalysisConfigurator(configFile);
+                }
+            }
+        }
+
+        return configInstance;
+        
     }
 
     public static AnalysisConfigurator getInstance() {
@@ -42,7 +59,7 @@ public class AnalysisConfigurator {
         return config;
     }
 
-    private LogAnalysisConfig digestConfig(String configFile) throws Exception {
+    protected LogAnalysisConfig digestConfig(String configFile) throws Exception {
         Digester d = new Digester();
         d.addObjectCreate("log-analysis", "com.changyou.loganalysis.config.LogAnalysisConfig");
         d.addSetNestedProperties("log-analysis/analysis-worker", new String[] { "script-exec", "script-file",
@@ -62,9 +79,17 @@ public class AnalysisConfigurator {
         d.addSetNext(pattern, "addLogConfig");
 
         pattern = "log-analysis/log-config/log";
-        d.addObjectCreate(pattern, "com.changyou.loganalysis.config.LogEntity");
+        d.addObjectCreate(pattern, "com.changyou.loganalysis.config.LogFile");
         d.addSetProperties(pattern, new String[] { "file", "err-file", "memo" }, new String[] { "file", "errFile",
                 "memo" });
+        d.addSetNestedProperties(pattern, new String[] { "log-format", "log-separator", "log-costunit" }, new String[] {
+                "logFormat", "logSeparator", "logCostunit" });
+        d.addSetNext(pattern, "addLogEntity");
+
+        pattern = "log-analysis/log-config/log-group";
+        d.addObjectCreate(pattern, "com.changyou.loganalysis.config.LogGroup");
+        d.addSetProperties(pattern, new String[] { "dir", "file-pattern", "err-file", "memo" }, new String[] { "dir",
+                "filePattern", "errFile", "memo" });
         d.addSetNestedProperties(pattern, new String[] { "log-format", "log-separator", "log-costunit" }, new String[] {
                 "logFormat", "logSeparator", "logCostunit" });
         d.addSetNext(pattern, "addLogEntity");

@@ -1,20 +1,23 @@
 package com.changyou.loganalysis.config;
 
-public class LogEntity {
+import java.io.File;
+import java.util.Date;
 
-    private String file;
-    private String memo;
-    private String logFormat;
-    private String logSeparator;
-    private String logCostunit;
-    private String errFile;
+public abstract class LogEntity {
 
-    public String getFile() {
-        return file;
+    protected String dir = "";
+    protected String memo;
+    protected String logFormat;
+    protected String logSeparator;
+    protected String logCostunit;
+    protected String errFile;
+
+    public String getDir() {
+        return dir;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setDir(String dir) {
+        this.dir = dir;
     }
 
     public String getMemo() {
@@ -57,4 +60,5 @@ public class LogEntity {
         this.errFile = errFile;
     }
 
+    public abstract File[] getLogFiles(String parentPath);
 }

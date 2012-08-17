@@ -2,43 +2,43 @@
 <log-analysis>
 
     <analysis-worker>
+        <!-- 
         <script-exec>/usr/bin/perl</script-exec>
         <script-file>/home/webadmin/loganalysis/script/loganalisys.pl</script-file>
+        -->
+        <script-exec>D:/lab/Perl/bin</script-exec>
+        <script-file>D:/mydoc/work/loganalisys/loganalysis/script/loganalisys.pl</script-file>
+
         <thread-pool-size>20</thread-pool-size>
     </analysis-worker>
 
     <profile name="resin">
         <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
-        <log-separator>
-        </log-separator>
+        <log-separator> </log-separator>
         <log-costunit>us</log-costunit>
     </profile>
 
     <profile name="apache">
         <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
-        <log-separator>
-        </log-separator>
+        <log-separator> </log-separator>
         <log-costunit>us</log-costunit>
     </profile>
 
     <profile name="nginx1">
         <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot%otherquot %otherquot %otherquot %otherquot %costquot</log-format>
-        <log-separator>
-        </log-separator>
+        <log-separator> </log-separator>
         <log-costunit>s</log-costunit>
     </profile>
 
     <profile name="nginx2">
         <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot%otherquot %otherquot%otherquot %otherquot %otherquot %costquot</log-format>
-        <log-separator>
-        </log-separator>
+        <log-separator> </log-separator>
         <log-costunit>s</log-costunit>
     </profile>
 
     <profile name="nginx3">
         <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot%otherquot %otherquot %otherquot %otherquot %otherquot %costquot</log-format>
-        <log-separator>
-        </log-separator>
+        <log-separator> </log-separator>
         <log-costunit>s</log-costunit>
     </profile>
 

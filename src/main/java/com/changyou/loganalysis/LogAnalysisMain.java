@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -26,23 +25,24 @@ public class LogAnalysisMain {
 
     public static void main(String[] args) throws Exception {
 
+        LogAnalysisUtil.parseParam(args);
+
         Date analysisDate = null;
 
-        if (args != null && args.length > 0) {
-            try {
-                analysisDate = sdf.parse(args[0]);
-            } catch (ParseException e) {
-                logger.error("Error when parse analysis date from input:" + args[0], e);
-            }
+        String analysisDateStr = System.getProperty(LogAnalysisUtil.PARAM_KEY_ANALYSISDATE);
+        try {
+            analysisDate = sdf.parse(analysisDateStr);
+        } catch (ParseException e) {
+            logger.error("Error when parse analysis date from input:" + args[0], e);
         }
 
-        if (analysisDate == null) {
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.DAY_OF_MONTH, -1);
-            analysisDate = c.getTime();
+        LogAnalysisConfig config = null;
+        String configFile = System.getProperty(LogAnalysisUtil.PARAM_KEY_ANALYSISCONFIG);
+        if (configFile != null) {
+            config = AnalysisConfigurator.getInstance(configFile).getConfig();
+        } else {
+            config = AnalysisConfigurator.getInstance().getConfig();
         }
-
-        LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
 
         int threadpoolSize = config.getThreadPoolSize();
         ExecutorService executor = Executors.newFixedThreadPool(threadpoolSize);
@@ -60,35 +60,40 @@ public class LogAnalysisMain {
                 String logcostunit = LogAnalysisUtil.isNull(log.getLogCostunit()) ? pc.getLogCostunit()
                         : log.getLogCostunit();
 
-                String logfileStr = logConfig.getParentPath() + "/"
-                        + LogAnalysisUtil.mergeDateString(analysisDate, log.getFile());
-                logfileStr = logfileStr.replace('\\', '/');
-                File logFile = new File(logfileStr);
-                if (!logFile.exists() || logFile.isDirectory()) {
-                    logger.info("file not exists:"+logfileStr);
-                    continue;
-                }
+                File[] logfiles = log.getLogFiles(logConfig.getParentPath());
+                for (File logfile : logfiles) {
 
-                String errfileStr = "";
-                if (!LogAnalysisUtil.isNull(log.getErrFile())) {
-                    errfileStr = logConfig.getParentPath() + "/"
-                            + LogAnalysisUtil.mergeDateString(analysisDate, log.getErrFile());
-                    errfileStr = errfileStr.replace('\\', '/');
-                    File errFile = new File(errfileStr);
-                    if (!errFile.exists() || errFile.isDirectory()) {
-                        errfileStr = "";
+                    String logfileStr = logfile.getAbsolutePath();
+                    logfileStr = logfileStr.replace('\\', '/');
+                    File logFile = new File(logfileStr);
+                    if (!logFile.exists() || logFile.isDirectory()) {
+                        logger.info("file not exists:" + logfileStr);
+                        continue;
                     }
+
+                    String errfileStr = "";
+                    if (!LogAnalysisUtil.isNull(log.getErrFile())) {
+                        errfileStr = logConfig.getParentPath() + "/"
+                                + LogAnalysisUtil.mergeDateString(analysisDate, log.getErrFile());
+                        errfileStr = errfileStr.replace('\\', '/');
+                        File errFile = new File(errfileStr);
+                        if (!errFile.exists() || errFile.isDirectory()) {
+                            errfileStr = "";
+                        }
+                    }
+
+                    AnalysisWorker worker = new AnalysisWorker(
+                                                               log.getMemo(),
+                                                               logfileStr,
+                                                               logformat,
+                                                               logseparator,
+                                                               logcostunit,
+                                                               errfileStr);
+
+                    workerList.add(worker);
+
                 }
 
-                AnalysisWorker worker = new AnalysisWorker(
-                                                           log.getMemo(),
-                                                           logfileStr,
-                                                           logformat,
-                                                           logseparator,
-                                                           logcostunit,
-                                                           errfileStr);
-
-                workerList.add(worker);
             }
         }
 
@@ -146,4 +151,5 @@ public class LogAnalysisMain {
         logger.info("LogAnalysis Ends");
         System.exit(0);
     }
+
 }

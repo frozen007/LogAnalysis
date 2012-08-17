@@ -9,8 +9,8 @@
     </appender>
 
     <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="file" value="log/analysis.log"/>
-        <param name="datePattern" value="'.'yyyy-MM-dd"/>
+        <param name="file" value="log/analysis.log" />
+        <param name="datePattern" value="'.'yyyy-MM-dd" />
 
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
@@ -18,9 +18,9 @@
     </appender>
 
     <root>
-        <level value="INFO"/>
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
+        <level value="INFO" /> 
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
     </root>
 
 </log4j:configuration>
