@@ -8,6 +8,7 @@ public class LogAnalysisConfig {
 
     private String scriptExec = "";
     private String scriptFile = "";
+    private String reportPath = "report";
     private int threadPoolSize = 20;
     private HashMap<String, ProfileConfig> profileMap = new HashMap<String, ProfileConfig>();
     private ArrayList<LogConfig> logConfigList = new ArrayList<LogConfig>();
@@ -23,6 +24,12 @@ public class LogAnalysisConfig {
     }
     public void setScriptFile(String scriptFile) {
         this.scriptFile = scriptFile;
+    }
+    public String getReportPath() {
+        return reportPath;
+    }
+    public void setReportPath(String reportPath) {
+        this.reportPath = reportPath;
     }
     public int getThreadPoolSize() {
         return threadPoolSize;

@@ -25,8 +25,6 @@ public class AnalysisWorker implements Runnable {
     private String logcostunit;
     private String errlogfile;
 
-    private LogStatistic statistic;
-
     public AnalysisWorker(String servername, String logfile, String logformat, String logseperator, String logcostunit,
             String errlogfile) {
         this.servername = servername;
@@ -63,21 +61,18 @@ public class AnalysisWorker implements Runnable {
 
             }
 
-            statistic = new LogStatistic(servername, resultMap);
+            LogAnalysisMonitor.getInstance().addLogStatistic(servername, resultMap);
 
             logger.info("Analysis completed for log file:" + logfile);
         } catch (Exception e) {
             logger.error("error when analyzing log file:" + logfile, e);
         } finally {
             try {
-                LogAnalysisCountDown.getInstance().countDown();
+                LogAnalysisMonitor.getInstance().countDown();
             } catch (Exception e) {
                 logger.error("error when analyzing log file:" + logfile, e);
             }
         }
     }
 
-    public LogStatistic getStatistic() {
-        return statistic;
-    }
 }

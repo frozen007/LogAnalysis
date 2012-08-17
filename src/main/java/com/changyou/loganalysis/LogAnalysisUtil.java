@@ -105,8 +105,14 @@ public class LogAnalysisUtil {
     }
 
     public static String parseLogFilename(String filename) {
-        String result = substVars(filename);
-        return substWildcards(result);
+        String result = filename;
+        try {
+            result = substVars(result);
+            result = substWildcards(result);
+        } catch (Exception e) {
+            logger.error("error when parsing log filename:" + result, e);
+        }
+        return result;
     }
 
     public static String mergeDateString(Date date, String template) {
@@ -178,6 +184,10 @@ public class LogAnalysisUtil {
                 break;
             }
             ie = val.indexOf("*", ie);
+            if (ie == -1) {
+                sbuf.append(val.substring(ib));
+                break;
+            }
             sbuf.append("\\Q").append(val.substring(ib, ie)).append("\\E").append(".*");
             ie++;
             ib = ie;

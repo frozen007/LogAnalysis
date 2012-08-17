@@ -53,6 +53,12 @@ public class TestAnalysisConfig extends TestCase {
         String sample2 = sample + "*hehe*.2012*";
         System.out.println("sample2=" + sample2);
         System.out.println(LogAnalysisUtil.substWildcards(sample2));
+        
+        String sample2_1 = "xixi*haha2012*lala";
+        System.out.println(LogAnalysisUtil.substWildcards(sample2_1));
+
+        String sample2_2 = "host.access.log.20120817";
+        System.out.println(LogAnalysisUtil.substWildcards(sample2_2));
 
         String sample3 = "host.access.log.${date:yyyyMMdd}*";
         sample3 = LogAnalysisUtil.substVars(sample3);

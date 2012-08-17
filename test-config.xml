@@ -4,7 +4,7 @@
     <analysis-worker>
         <script-exec>D:/lab/Perl/bin/perl.exe</script-exec>
         <script-file>D:/mydoc/work/loganalisys/loganalysis/script/loganalisys.pl</script-file>
-
+        <report-path>report</report-path>
         <thread-pool-size>20</thread-pool-size>
     </analysis-worker>
 
@@ -50,8 +50,10 @@
         <log file="'64_175/host.access.log.'yyyyMMddxx" err-file="" memo="活动系统_64_175"/>
         <log file="'64_176/host.access.log.'yyyyMMddxx" err-file="" memo="活动系统_64_176"/>
         -->
-        <log-group dir="64_175" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="活动系统_64_175" />
+        <log-group dir="64_175" file-pattern="host.access.log.${date:yyyyMMdd}01" err-file="" memo="活动系统_64_175" />
+        <!-- 
         <log-group dir="64_176" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="活动系统_64_176" />
+        -->
 
     </log-config>
 </log-analysis>

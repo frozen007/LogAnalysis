@@ -2,13 +2,9 @@
 <log-analysis>
 
     <analysis-worker>
-        <!-- 
         <script-exec>/usr/bin/perl</script-exec>
         <script-file>/home/webadmin/loganalysis/script/loganalisys.pl</script-file>
-        -->
-        <script-exec>D:/lab/Perl/bin</script-exec>
-        <script-file>D:/mydoc/work/loganalisys/loganalysis/script/loganalisys.pl</script-file>
-
+        <report-path>report</report-path>
         <thread-pool-size>20</thread-pool-size>
     </analysis-worker>
 
@@ -42,72 +38,71 @@
         <log-costunit>s</log-costunit>
     </profile>
 
+    <profile name="nginx4">
+        <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot %otherquot %otherquot %otherquot %otherquot %costquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>s</log-costunit>
+    </profile>
+
     <log-config name="nginx1-config" profile="nginx1" parent-path="/home/nginxlog">
-        <!--有两种日志access.log.2012081321和host.access.log_20120724
-        <log file="'154_145/host.access.log_'yyyyMMdd" err-file="" memo="wgapi通用对接_154_145"/>
-         -->
 
         <!--畅游论坛-->
-        <log file="'154_51/bbs.access.log.'yyyy-MM-dd" err-file="" memo="畅游论坛_154_51" />
-        <log file="'55_35/bbs.access.log.'yyyyMMdd" err-file="" memo="畅游论坛_55_35" />
-        <log file="'64_220/bbs.access.log.'yyyy-MM-dd" err-file="" memo="畅游论坛_64_220" />
+        <log file="154_51/bbs.access.log.${date:yyyy-MM-dd}" err-file="" memo="畅游论坛_154_51" />
+        <log file="55_35/bbs.access.log.${date:yyyyMMdd}" err-file="" memo="畅游论坛_55_35" />
+        <log file="64_220/bbs.access.log.${date:yyyy-MM-dd}" err-file="" memo="畅游论坛_64_220" />
 
         <!--peak-->
         <!-- 17_55没有request_time
         <log file="'17_55/'yyyyMMdd'.access_log'" err-file="" memo="peak_17_55"/>
         -->
-        <log file="'17_75/'yyyyMMdd'.access_log'" err-file="" memo="peak_17_75" />
+        <log file="17_75/${date:yyyyMMdd}.access_log" err-file="" memo="peak_17_75" />
         <!-- 64_180没有request_time
         <log file="'64_180/'yyyyMMdd'.access_log'" err-file="" memo="peak_64_180"/>
         -->
     </log-config>
 
     <log-config name="nginx2-config" profile="nginx2" parent-path="/home/nginxlog">
-        <log file="'154_113/protect_acc_log_'yyyy-MM-dd" err-file="" memo="protect" />
-        <log file="'154_138/member_acc_log_'yyyy-MM-dd" err-file="" memo="memeber" />
+        <log file="154_113/protect_acc_log_${date:yyyy-MM-dd}" err-file="" memo="protect" />
+        <log file="154_138/member_acc_log_${date:yyyy-MM-dd}" err-file="" memo="memeber" />
 
         <!--鹿鼎记论坛-->
-        <log file="'54_65/access_log.'yyyyMMdd" err-file="" memo="鹿鼎记论坛_54_65" />
-        <log file="'55_42/access_log.'yyyyMMdd" err-file="" memo="鹿鼎记论坛_55_42" />
+        <log file="54_65/access_log.${date:yyyyMMdd}" err-file="" memo="鹿鼎记论坛_54_65" />
+        <log file="55_42/access_log.${date:yyyyMMdd}" err-file="" memo="鹿鼎记论坛_55_42" />
 
         <!--pay-->
-        <log file="'64_35/pay_access_log_'yyyy-MM-dd" err-file="" memo="pay_64_35" />
-        <log file="'64_36/pay_access_log_'yyyy-MM-dd" err-file="" memo="pay_64_36" />
+        <log file="64_35/pay_access_log_${date:yyyy-MM-dd}" err-file="" memo="pay_64_35" />
+        <log file="64_36/pay_access_log_${date:yyyy-MM-dd}" err-file="" memo="pay_64_36" />
         
-        <!--注册登陆系统      没有request_time
-        <log file="'64_13/access.log.'yyyyMMddxx" err-file="" memo="注册登陆系统_64_13"/>
-        <log file="'64_13/all.access.log.'yyyyMMdd" err-file="" memo="注册登陆系统_64_13"/>
-        -->
-
         <!--auth-->
-        <log file="'64_36/auth_acc_log_'yyyy-MM-dd" err-file="" memo="auth_64_36" />
+        <log file="64_36/auth_acc_log_${date:yyyy-MM-dd}" err-file="" memo="auth_64_36" />
     </log-config>
 
     <log-config name="nginx3-config" profile="nginx3" parent-path="/home/nginxlog">
-        <!--account
-        <log file="'17_209/host.access.log.'yyyyMMddxx" err-file="" memo="account_17_209"/>
-        <log file="'17_211/host.access.log.'yyyyMMddxx" err-file="" memo="account_17_211"/>
-        <log file="'64_45/host.access.log.'yyyyMMddxx" err-file="" memo="account_64_45"/>
-        <log file="'64_67/host.access.log.'yyyyMMddxx" err-file="" memo="account_64_67"/>
-        -->
-        <log file="'17_209/all.host.access.log.'yyyyMMdd" err-file="" memo="account_17_209" />
-        <log file="'17_211/all.host.access.log.'yyyyMMdd" err-file="" memo="account_17_211" />
-        <log file="'64_45/all.host.access.log.'yyyyMMdd" err-file="" memo="account_64_45" />
-        <log file="'64_67/all.host.access.log.'yyyyMMdd" err-file="" memo="account_64_67" />
+        <!--account-->
+        <log-group dir="17_209" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="account_17_209"/>
+        <log-group dir="17_211" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="account_17_211"/>
+        <log-group dir="64_45" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="account_64_45"/>
+        <log-group dir="64_67" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="account_64_67"/>
 
-        <!--sso
-        <log file="'64_133/host.access.log.'yyyyMMddxx" err-file="" memo="sso_64_133"/>
-        <log file="'64_134/host.access.log.'yyyyMMddxx" err-file="" memo="sso_64_134"/>
-        -->
-        <log file="'64_133/all.host.access.log.'yyyyMMdd" err-file="" memo="sso_64_133" />
-        <log file="'64_134/all.host.access.log.'yyyyMMdd" err-file="" memo="sso_64_134" />
+        <!--sso-->
+        <log-group dir="64_133" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="sso_64_133"/>
+        <log-group dir="64_134" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="sso_64_134"/>
 
-        <!--活动系统
-        <log file="'64_175/host.access.log.'yyyyMMddxx" err-file="" memo="活动系统_64_175"/>
-        <log file="'64_176/host.access.log.'yyyyMMddxx" err-file="" memo="活动系统_64_176"/>
-        -->
-        <log file="'64_175/all.host.access.log.'yyyyMMdd" err-file="" memo="活动系统_64_175" />
-        <log file="'64_176/all.host.access.log.'yyyyMMdd" err-file="" memo="活动系统_64_176" />
+
+        <!--活动系统-->
+        <log-group dir="64_175" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="活动系统_64_175" />
+        <log-group dir="64_176" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="活动系统_64_176" />
+    </log-config>
+
+    <log-config name="nginx4-config" profile="nginx4" parent-path="/home/nginxlog">
+        <!--注册登陆系统-->
+        <log-group dir="64_13" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="注册登陆系统_64_13"/>
+        <log-group dir="154_145" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="注册登陆系统_154_145"/>
+
+        <!--wgapi通用对接-->
+        <log file="64_13/host.access.log_${date:yyyyMMdd}" err-file="" memo="wgapi通用对接_64_13"/>
+        <log file="154_145/host.access.log_${date:yyyyMMdd}" err-file="" memo="wgapi通用对接_154_145"/>
 
     </log-config>
+
 </log-analysis>

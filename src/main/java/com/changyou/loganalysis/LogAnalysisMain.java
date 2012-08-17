@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -97,24 +99,25 @@ public class LogAnalysisMain {
             }
         }
 
-        LogAnalysisCountDown countDownMonitor = LogAnalysisCountDown.initCountDown(workerList.size());
+        LogAnalysisMonitor monitor = LogAnalysisMonitor.initialize(workerList.size());
 
         logger.info("LogAnalysis Begins");
         for (AnalysisWorker worker : workerList) {
             executor.execute(worker);
         }
-        countDownMonitor.waitForFinish();
+        monitor.waitForFinish();
 
-        File resultFile = new File("analysis_" + sdf.format(analysisDate) + ".csv");
-
+        File resultFile = new File(config.getReportPath(), "analysis_" + sdf.format(analysisDate) + ".csv");
+        resultFile.getParentFile().mkdir();
         logger.info("Generating analysis result:" + resultFile.getAbsolutePath());
 
         PrintWriter writer = new PrintWriter(resultFile, "GBK");
         StringBuilder buf = new StringBuilder();
         // header
         writer.println("服务器,响应时间<1S,比例,响应时间1~3s,比例,响应时间3~10s,比例,响应时间>=10s,比例,500错误页面量,比例,exception数量,日志");
-        for (AnalysisWorker worker : workerList) {
-            LogStatistic statistic = worker.getStatistic();
+        Map<String, LogStatistic> statisticMap = LogAnalysisMonitor.getInstance().getStatisticMap();
+        for (String servername : statisticMap.keySet()) {
+            LogStatistic statistic = statisticMap.get(servername);
             buf.setLength(0);
             buf.append(statistic.servername).append(",");
             buf
@@ -149,6 +152,12 @@ public class LogAnalysisMain {
         writer.flush();
 
         logger.info("LogAnalysis Ends");
+
+        Properties props = new Properties();
+        props.put("analysisdate", analysisDateStr);
+        props.put("resultfile.path", resultFile.getAbsolutePath());
+        props.put("resultfile", resultFile.getName());
+        AntRunner.runAntScript("sendmail.xml", "sendmail", props);
         System.exit(0);
     }
 

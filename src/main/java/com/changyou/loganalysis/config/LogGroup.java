@@ -2,7 +2,6 @@ package com.changyou.loganalysis.config;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Date;
 
 import com.changyou.loganalysis.LogAnalysisUtil;
 

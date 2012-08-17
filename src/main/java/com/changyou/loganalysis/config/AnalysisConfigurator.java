@@ -40,7 +40,7 @@ public class AnalysisConfigurator {
         }
 
         return configInstance;
-        
+
     }
 
     public static AnalysisConfigurator getInstance() {
@@ -63,7 +63,8 @@ public class AnalysisConfigurator {
         Digester d = new Digester();
         d.addObjectCreate("log-analysis", "com.changyou.loganalysis.config.LogAnalysisConfig");
         d.addSetNestedProperties("log-analysis/analysis-worker", new String[] { "script-exec", "script-file",
-                "thread-pool-size" }, new String[] { "scriptExec", "scriptFile", "threadPoolSize" });
+                "report-path", "thread-pool-size" }, new String[] { "scriptExec", "scriptFile", "reportPath",
+                "threadPoolSize" });
 
         String pattern = "log-analysis/profile";
         d.addObjectCreate(pattern, "com.changyou.loganalysis.config.ProfileConfig");
