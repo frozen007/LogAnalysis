@@ -29,13 +29,24 @@ public class LogAnalysisMain {
 
         LogAnalysisUtil.parseParam(args);
 
+        try {
+            LogAnalysisMain main = new LogAnalysisMain();
+            main.execAnalysiMain();
+        } catch (Exception e) {
+            logger.error("error when execute analysis.", e);
+        }
+
+        System.exit(0);
+    }
+
+    public void execAnalysiMain() throws Exception {
         Date analysisDate = null;
 
         String analysisDateStr = System.getProperty(LogAnalysisUtil.PARAM_KEY_ANALYSISDATE);
         try {
             analysisDate = sdf.parse(analysisDateStr);
         } catch (ParseException e) {
-            logger.error("Error when parse analysis date from input:" + args[0], e);
+            logger.error("Error when parse analysis date:" + analysisDateStr, e);
         }
 
         LogAnalysisConfig config = null;
@@ -153,12 +164,11 @@ public class LogAnalysisMain {
 
         logger.info("LogAnalysis Ends");
 
+        String antScript = System.getProperty("send.mail.script", "sendmail.xml");
         Properties props = new Properties();
         props.put("analysisdate", analysisDateStr);
         props.put("resultfile.path", resultFile.getAbsolutePath());
         props.put("resultfile", resultFile.getName());
-        AntRunner.runAntScript("sendmail.xml", "sendmail", props);
-        System.exit(0);
+        AntRunner.runAntScript(antScript, "sendmail", props);
     }
-
 }

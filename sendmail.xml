@@ -1,11 +1,20 @@
 <project name="sdmail" default="sendmail">
     <target name="sendmail">
-        <mail mailhost="smtp.cyou-inc.com" subject="Daily access log analysis report" files="${resultfile.path}">
+        <mail mailhost="127.0.0.1" mailport="25" subject="Daily access log analysis report" files="${resultfile.path}">
             <from address="zhaomingyu@cyou-inc.com"/>
             <replyto address="zhaomingyu@cyou-inc.com"/>
+            <to address="liuxinchun@cyou-inc.com"/>
+            <to address="yuzhushi@cyou-inc.com"/>
+            <to address="zhangjiayu@cyou-inc.com"/>
+            <to address="duansujie@cyou-inc.com"/>
+            <to address="hurenbing@cyou-inc.com"/>
+            <to address="lijing_js@cyou-inc.com"/>
+            <to address="mayalin@cyou-inc.com"/>
+            <to address="mazhen@cyou-inc.com"/>
+            <to address="zhangchao_js@cyou-inc.com"/>
+            <to address="zhaoxuecheng@cyou-inc.com"/>
+            <to address="kangshuai@cyou-inc.com"/>
             <to address="zhaomingyu@cyou-inc.com"/>
-            <!--
-            <to address="zhangjiayu@cyou-inc.com"/>-->
             <message>access log analysis report for ${analysisdate}. please see attachment ${resultfile} for more detail.</message>
         </mail>
     </target>

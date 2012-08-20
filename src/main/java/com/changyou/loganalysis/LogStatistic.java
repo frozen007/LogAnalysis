@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class LogStatistic {
     public String servername;
-    public String logfile;
+    public String logfile="";
 
     // 统计数据
     public long totalrecord = 0; // 总记录数
