@@ -1,0 +1,8 @@
+<project name="sdmail" default="sendmimemail">
+    <target name="sendmimemail">
+        <mimemail mailhost="smtp.cyou-inc.com" subject="Daily access log analysis report" tolist="zhaomingyu@cyou-inc.com" from="zhaomingyu@cyou-inc.com">
+            <!--
+            <to address="zhangjiayu@cyou-inc.com"/>-->
+        </mimemail>
+    </target>
+</project>

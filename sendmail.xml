@@ -1,21 +1,24 @@
 <project name="sdmail" default="sendmail">
     <target name="sendmail">
-        <mail mailhost="127.0.0.1" mailport="25" subject="Daily access log analysis report" files="${resultfile.path}">
-            <from address="zhaomingyu@cyou-inc.com"/>
-            <replyto address="zhaomingyu@cyou-inc.com"/>
-            <to address="liuxinchun@cyou-inc.com"/>
-            <to address="yuzhushi@cyou-inc.com"/>
-            <to address="zhangjiayu@cyou-inc.com"/>
-            <to address="duansujie@cyou-inc.com"/>
-            <to address="hurenbing@cyou-inc.com"/>
-            <to address="lijing_js@cyou-inc.com"/>
-            <to address="mayalin@cyou-inc.com"/>
-            <to address="mazhen@cyou-inc.com"/>
-            <to address="zhangchao_js@cyou-inc.com"/>
-            <to address="zhaoxuecheng@cyou-inc.com"/>
-            <to address="kangshuai@cyou-inc.com"/>
-            <to address="zhaomingyu@cyou-inc.com"/>
-            <message>access log analysis report for ${analysisdate}. please see attachment ${resultfile} for more detail.</message>
+        <mail mailhost="127.0.0.1" mailport="25" subject="网站日志分析报告-${analysisdate}" files="${resultfile.path}">
+            <from address="zhaomingyu@cyou-inc.com" />
+            <replyto address="zhaomingyu@cyou-inc.com" />
+            <to address="zhaomingyu@cyou-inc.com" />
+            <bcc address="liuxinchun@cyou-inc.com" />
+            <bcc address="yuzhushi@cyou-inc.com" />
+            <bcc address="zhangjiayu@cyou-inc.com" />
+            <bcc address="duansujie@cyou-inc.com" />
+            <bcc address="hurenbing@cyou-inc.com" />
+            <bcc address="lijing_js@cyou-inc.com" />
+            <bcc address="mayalin@cyou-inc.com" />
+            <bcc address="mazhen@cyou-inc.com" />
+            <bcc address="zhangchao_js@cyou-inc.com" />
+            <bcc address="zhaoxuecheng@cyou-inc.com" />
+            <bcc address="kangshuai@cyou-inc.com" />
+            <message>技术开发部各站点日志分析结果
+
+日志所属日期：${analysisdate}，更多信息请看附件${resultfile}。
+            </message>
         </mail>
     </target>
 </project>
