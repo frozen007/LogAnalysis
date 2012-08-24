@@ -8,7 +8,7 @@
         <thread-pool-size>20</thread-pool-size>
     </analysis-worker>
 
-    <profile name="resin">
+    <profile name="resin1">
         <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
         <log-separator> </log-separator>
         <log-costunit>us</log-costunit>
@@ -43,6 +43,11 @@
         <log-separator> </log-separator>
         <log-costunit>s</log-costunit>
     </profile>
+
+    <log-config name="resin1-config" profile="resin1" parent-path="/home/resinlog">
+        <!--移动统计系统-->
+        <log file="154_213/access.log.${date:yyyyMMdd}" err-file="" memo="移动统计系统_154_213" />
+    </log-config>
 
     <log-config name="nginx1-config" profile="nginx1" parent-path="/home/nginxlog">
 

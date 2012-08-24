@@ -1,6 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <project name="sdmail" default="sendmail">
     <target name="sendmail">
-        <mail mailhost="127.0.0.1" mailport="25" subject="网站日志分析报告-${analysisdate}" files="${resultfile.path}">
+        <mail mailhost="127.0.0.1" mailport="25" 
+            subject="网站日志分析报告-${analysisdate}" 
+            files="${resultfile.path}" charset="UTF-8">
+            
             <from address="zhaomingyu@cyou-inc.com" />
             <replyto address="zhaomingyu@cyou-inc.com" />
             <to address="zhaomingyu@cyou-inc.com" />
