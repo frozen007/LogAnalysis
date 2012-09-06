@@ -14,6 +14,18 @@
         <log-costunit>us</log-costunit>
     </profile>
 
+    <profile name="resin2">
+        <log-format>%host %other %other %time1 %methodurl %code %bytesd %otherquot %otherquot %costquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>s</log-costunit>
+    </profile>
+
+    <profile name="resin3">
+        <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot %otherquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>us</log-costunit>
+    </profile>
+
     <profile name="apache">
         <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
         <log-separator> </log-separator>
@@ -44,9 +56,58 @@
         <log-costunit>s</log-costunit>
     </profile>
 
-    <log-config name="resin1-config" profile="resin1" parent-path="/home/resinlog">
+    <log-config name="resin1-resinlog" profile="resin1" parent-path="/home/resinlog">
         <!--移动统计系统-->
         <log file="154_213/access.log.${date:yyyyMMdd}" err-file="" memo="移动统计系统_154_213" />
+
+        <!--HR招聘系统前台-->
+        <log file="64_128/access.log.${date:yyyyMMdd}" err-file="" memo="HR招聘系统前台_64_128" />
+
+        <!--渠道系统后台-->
+        <log file="19_129/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统后台_19_129" />
+
+        <!--渠道系统前台-->
+        <log file="74_104/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_74_104" />
+        <log file="74_198/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_74_198" />
+        <log file="74_199/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_74_199" />
+        <log file="154_54/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_154_54" />
+        <log file="154_55/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_154_55" />
+        <log file="154_56/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_154_56" />
+
+        <!--畅游新OA系统-->
+        <log file="64_130/access.log.${date:yyyyMMdd}" err-file="" memo="畅游新OA系统_64_130" />
+
+        <!--客服后台系统-->
+        <log file="64_126/access.log.${date:yyyyMMdd}" err-file="" memo="客服后台系统_64_126" />
+        <log file="19_29/access.log.${date:yyyyMMdd}" err-file="" memo="客服后台系统_19_29" />
+
+    </log-config>
+
+    <log-config name="resin2-resinlog" profile="resin2" parent-path="/home/resinlog">
+        <!--HR招聘系统后台-->
+        <log file="17_98_ht/access.log.${date:yyyyMMdd}" err-file="" memo="HR招聘系统后台_17_98" />
+
+        <!--HR招聘系统前台-->
+        <log file="17_98_qt/access.log.${date:yyyyMMdd}" err-file="" memo="HR招聘系统前台_17_98" />
+
+    </log-config>
+
+    <log-config name="resin2-resinlog_pri" profile="resin2" parent-path="/home/resinlog_pri">
+
+        <!--特权网吧前台-->
+        <log-group dir="64_128" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="特权网吧前台_64_128"/>
+
+    </log-config>
+
+    <log-config name="resin3-resinlog" profile="resin3" parent-path="/home/resinlog">
+        <!--BUG管理系统-->
+        <log file="54_180/access.log.${date:yyyyMMdd}" err-file="" memo="BUG管理系统_54_180" />
+
+    </log-config>
+
+    <log-config name="resin3-resinlog_spr" profile="resin3" parent-path="/home/resinlog_spr">
+        <!--推广系统后台-->
+        <log-group dir="" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="推广系统后台_64_128" />
     </log-config>
 
     <log-config name="nginx1-config" profile="nginx1" parent-path="/home/nginxlog">
@@ -57,9 +118,7 @@
         <log file="64_220/bbs.access.log.${date:yyyy-MM-dd}" err-file="" memo="畅游论坛_64_220" />
 
         <!--peak-->
-        <!-- 17_55没有request_time
-        <log file="'17_55/'yyyyMMdd'.access_log'" err-file="" memo="peak_17_55"/>
-        -->
+        <log file="17_55/${date:yyyyMMdd}.access_log'" err-file="" memo="peak_17_55"/>
         <log file="17_75/${date:yyyyMMdd}.access_log" err-file="" memo="peak_17_75" />
         <!-- 64_180没有request_time
         <log file="'64_180/'yyyyMMdd'.access_log'" err-file="" memo="peak_64_180"/>
@@ -67,7 +126,10 @@
     </log-config>
 
     <log-config name="nginx2-config" profile="nginx2" parent-path="/home/nginxlog">
+        <!--protect-->
         <log file="154_113/protect_acc_log_${date:yyyy-MM-dd}" err-file="" memo="protect" />
+
+        <!--member-->
         <log file="154_138/member_acc_log_${date:yyyy-MM-dd}" err-file="" memo="memeber" />
 
         <!--鹿鼎记论坛-->
@@ -92,7 +154,6 @@
         <!--sso-->
         <log-group dir="64_133" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="sso_64_133"/>
         <log-group dir="64_134" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="sso_64_134"/>
-
 
         <!--活动系统-->
         <log-group dir="64_175" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="活动系统_64_175" />

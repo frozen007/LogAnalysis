@@ -74,37 +74,40 @@ public class LogAnalysisMain {
                         : log.getLogCostunit();
 
                 File[] logfiles = log.getLogFiles(logConfig.getParentPath());
-                for (File logfile : logfiles) {
+                if (logfiles == null || logfiles.length == 0) {
+                    logger.info("log file not exists for :" + log.getMemo());
+                } else {
+                    for (File logfile : logfiles) {
 
-                    String logfileStr = logfile.getAbsolutePath();
-                    logfileStr = logfileStr.replace('\\', '/');
-                    File logFile = new File(logfileStr);
-                    if (!logFile.exists() || logFile.isDirectory()) {
-                        logger.info("file not exists:" + logfileStr);
-                        continue;
-                    }
-
-                    String errfileStr = "";
-                    if (!LogAnalysisUtil.isNull(log.getErrFile())) {
-                        errfileStr = logConfig.getParentPath() + "/"
-                                + LogAnalysisUtil.mergeDateString(analysisDate, log.getErrFile());
-                        errfileStr = errfileStr.replace('\\', '/');
-                        File errFile = new File(errfileStr);
-                        if (!errFile.exists() || errFile.isDirectory()) {
-                            errfileStr = "";
+                        String logfileStr = logfile.getAbsolutePath();
+                        logfileStr = logfileStr.replace('\\', '/');
+                        File logFile = new File(logfileStr);
+                        if (!logFile.exists() || logFile.isDirectory()) {
+                            logger.info("log file not exists:" + logfileStr + " for " + log.getMemo());
+                            continue;
                         }
+
+                        String errfileStr = "";
+                        if (!LogAnalysisUtil.isNull(log.getErrFile())) {
+                            errfileStr = logConfig.getParentPath() + "/"
+                                    + LogAnalysisUtil.mergeDateString(analysisDate, log.getErrFile());
+                            errfileStr = errfileStr.replace('\\', '/');
+                            File errFile = new File(errfileStr);
+                            if (!errFile.exists() || errFile.isDirectory()) {
+                                errfileStr = "";
+                            }
+                        }
+
+                        AnalysisWorker worker = new AnalysisWorker(
+                                                                   log.getMemo(),
+                                                                   logfileStr,
+                                                                   logformat,
+                                                                   logseparator,
+                                                                   logcostunit,
+                                                                   errfileStr);
+                        workerList.add(worker);
+
                     }
-
-                    AnalysisWorker worker = new AnalysisWorker(
-                                                               log.getMemo(),
-                                                               logfileStr,
-                                                               logformat,
-                                                               logseparator,
-                                                               logcostunit,
-                                                               errfileStr);
-
-                    workerList.add(worker);
-
                 }
 
             }
