@@ -5,7 +5,7 @@
         <script-exec>/usr/bin/perl</script-exec>
         <script-file>/home/webadmin/loganalysis/script/loganalisys.pl</script-file>
         <report-path>report</report-path>
-        <thread-pool-size>20</thread-pool-size>
+        <thread-pool-size>30</thread-pool-size>
     </analysis-worker>
 
     <profile name="resin1">
@@ -107,7 +107,7 @@
 
     <log-config name="resin3-resinlog_spr" profile="resin3" parent-path="/home/resinlog_spr">
         <!--推广系统后台-->
-        <log-group dir="" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="推广系统后台_64_128" />
+        <log-group dir="64_128" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="推广系统后台_64_128" />
     </log-config>
 
     <log-config name="nginx1-config" profile="nginx1" parent-path="/home/nginxlog">
@@ -118,7 +118,7 @@
         <log file="64_220/bbs.access.log.${date:yyyy-MM-dd}" err-file="" memo="畅游论坛_64_220" />
 
         <!--peak-->
-        <log file="17_55/${date:yyyyMMdd}.access_log'" err-file="" memo="peak_17_55"/>
+        <log file="17_55/${date:yyyyMMdd}.access_log" err-file="" memo="peak_17_55"/>
         <log file="17_75/${date:yyyyMMdd}.access_log" err-file="" memo="peak_17_75" />
         <!-- 64_180没有request_time
         <log file="'64_180/'yyyyMMdd'.access_log'" err-file="" memo="peak_64_180"/>
