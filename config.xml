@@ -81,6 +81,8 @@
         <log file="64_126/access.log.${date:yyyyMMdd}" err-file="" memo="客服后台系统_64_126" />
         <log file="19_29/access.log.${date:yyyyMMdd}" err-file="" memo="客服后台系统_19_29" />
 
+        <!--运维资源管理平台-->
+        <log file="17_203/access.log.${date:yyyyMMdd}" err-file="" memo="运维资源管理平台_17_203" />
     </log-config>
 
     <log-config name="resin2-resinlog" profile="resin2" parent-path="/home/resinlog">
