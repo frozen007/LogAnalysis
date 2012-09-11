@@ -7,7 +7,7 @@ my $LogCostUnit=shift;
 
 #$LogFile="D:/mydoc/work/loganalisys/log/resinlog_spr/64_128/access.log.cost";
 #$ErrLogFile="D:/mydoc/work/loganalisys/log/resinlog_spr/64_128/stderr.log";
-$Debug=1;
+#$Debug=1;
 
 #$LogFormat="%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot %otherquot %otherquot %otherquot %otherquot %costquot";
 #$LogCostUnit="s";

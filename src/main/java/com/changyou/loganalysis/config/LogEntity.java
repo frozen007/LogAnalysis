@@ -78,6 +78,10 @@ public abstract class LogEntity {
             return new File[] { new File(parentPath + "/" + dir + "/" + LogAnalysisUtil.parseLogFilename(errFile)) };
         }
 
+        if(LogAnalysisUtil.isNull(errFilePattern)) {
+            return null;
+        }
+
         File dirFile = new File(parentPath + "/" + dir);
         final String resolvedFilePattern = LogAnalysisUtil.parseLogFilename(errFilePattern);
         File[] errfiles = dirFile.listFiles(new FilenameFilter() {

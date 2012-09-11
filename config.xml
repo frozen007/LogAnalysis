@@ -2,9 +2,9 @@
 <log-analysis>
 
     <analysis-worker>
-        <script-exec>/usr/bin/perl</script-exec>
-        <log-script>/home/webadmin/loganalysis/script/loganalysis.pl</log-script>
-        <err-script>/home/webadmin/loganalysis/script/erranalysis.pl</err-script>
+        <script-exec>${perl.path}</script-exec>
+        <log-script>${loganalysis.home}/script/loganalysis.pl</log-script>
+        <err-script>${loganalysis.home}/script/erranalysis.pl</err-script>
         <report-path>report</report-path>
         <thread-pool-size>30</thread-pool-size>
     </analysis-worker>
@@ -27,7 +27,7 @@
         <log-costunit>us</log-costunit>
     </profile>
 
-    <profile name="apache">
+    <profile name="apache1">
         <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
         <log-separator> </log-separator>
         <log-costunit>us</log-costunit>
@@ -79,11 +79,11 @@
         <log file="64_130/access.log.${date:yyyyMMdd}" err-file="" memo="畅游新OA系统_64_130" />
 
         <!--客服后台系统-->
-        <log file="64_126/access.log.${date:yyyyMMdd}" err-file="" memo="客服后台系统_64_126" />
+        <log dir="64_126" file="access.log.${date:yyyyMMdd}" err-file-pattern="stderr-${date:yyyy_MM_dd}.log*" memo="客服后台系统_64_126" />
         <log file="19_29/access.log.${date:yyyyMMdd}" err-file="" memo="客服后台系统_19_29" />
 
         <!--运维资源管理平台-->
-        <log file="17_203/access.log.${date:yyyyMMdd}" err-file="" memo="运维资源管理平台_17_203" />
+        <log dir="17_203" file="access.log.${date:yyyyMMdd}" err-file="stderr-${date:yyyy_MM_dd}.log" memo="运维资源管理平台_17_203" />
     </log-config>
 
     <log-config name="resin2-resinlog" profile="resin2" parent-path="/home/resinlog">
@@ -104,7 +104,7 @@
 
     <log-config name="resin3-resinlog" profile="resin3" parent-path="/home/resinlog">
         <!--BUG管理系统-->
-        <log file="54_180/access.log.${date:yyyyMMdd}" err-file="" memo="BUG管理系统_54_180" />
+        <log-group dir="54_180" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="BUG管理系统_54_180" />
 
     </log-config>
 
@@ -113,6 +113,11 @@
         <log-group dir="64_128" file-pattern="access.log.${date:yyyyMMdd}*" err-file="" memo="推广系统后台_64_128" />
     </log-config>
 
+    <log-config name="apache1-apachelog" profile="apache1" parent-path="/home/apachelog">
+        <!--广告监控统计-->
+        <log file="64_79/access.log.${date:yyyyMMdd}" err-file="" memo="广告监控统计_64_79" />
+    </log-config>
+            
     <log-config name="nginx1-config" profile="nginx1" parent-path="/home/nginxlog">
 
         <!--畅游论坛-->

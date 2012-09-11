@@ -87,25 +87,29 @@ public class LogAnalysisMain {
                         }
 
                         AnalysisWorker worker = new LogAnalysisWorker(
-                                                                   log.getMemo(),
-                                                                   logfileStr,
-                                                                   logformat,
-                                                                   logseparator,
-                                                                   logcostunit);
+                                                                      log.getMemo(),
+                                                                      logfileStr,
+                                                                      logformat,
+                                                                      logseparator,
+                                                                      logcostunit);
                         workerList.add(worker);
 
                     }
 
                     File[] errFiles = log.getErrFiles(logConfig.getParentPath());
-                    for(File errFile : errFiles) {
-                        String errfileStr = errFile.getAbsolutePath().replace('\\', '/');
-                        if(!errFile.exists() || errFile.isDirectory()) {
-                            logger.info("err file not exists:" + errfileStr + " for " + log.getMemo());
-                            continue;
-                        }
+                    if (errFiles == null || errFiles.length == 0) {
+                        logger.info("no error file found for :" + log.getMemo());
+                    } else {
+                        for (File errFile : errFiles) {
+                            String errfileStr = errFile.getAbsolutePath().replace('\\', '/');
+                            if (!errFile.exists() || errFile.isDirectory()) {
+                                logger.info("err file not exists:" + errfileStr + " for " + log.getMemo());
+                                continue;
+                            }
 
-                        AnalysisWorker worker = new ErrAnalysisWorker(log.getMemo(), errfileStr);
-                        workerList.add(worker);
+                            AnalysisWorker worker = new ErrAnalysisWorker(log.getMemo(), errfileStr);
+                            workerList.add(worker);
+                        }
                     }
                 }
 

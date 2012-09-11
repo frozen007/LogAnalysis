@@ -13,10 +13,10 @@ CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/commons-digester3-3.2.jar
 CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/commons-logging-1.1.1.jar
 CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/junit-3.8.1.jar
 CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/log4j-1.2.14.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/loganalysis-1.0.jar
+CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/loganalysis-1.1.jar
 CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/mail-1.4.5.jar
 
 cd $LOGANALYSIS_HOME
 
-$JAVA_HOME/bin/java -Dsend.mail.script=sendmail.xml -cp $CLASSPATH com.changyou.loganalysis.LogAnalysisMain $1 $2 $3 $4
+$JAVA_HOME/bin/java -Dsend.mail.script=sendmail.xml -Dperl.path=/usr/bin/perl -Dloganalysis.home=$LOGANALYSIS_HOME -cp $CLASSPATH com.changyou.loganalysis.LogAnalysisMain $1 $2 $3 $4
 
