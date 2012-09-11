@@ -4,7 +4,6 @@ my $LogFile=shift;
 my $LogFormat=shift;
 my $LogSeparator=shift;
 my $LogCostUnit=shift;
-my $ErrLogFile=shift;
 
 #$LogFile="D:/mydoc/work/loganalisys/log/resinlog_spr/64_128/access.log.cost";
 #$ErrLogFile="D:/mydoc/work/loganalisys/log/resinlog_spr/64_128/stderr.log";
@@ -119,34 +118,10 @@ while(<LOG>) {
 
 }
 
-my $exceptioncnt=0;
-if( -e $ErrLogFile) {
-    open(ERRLOG, $ErrLogFile);
-    binmode ERRLOG;
-    while(<ERRLOG>) {
-        my $line = $_;
-        chomp $line;
-        if($line eq '') {
-            next;
-        }
-
-        if( $line =~ /^\s+at/) {
-            next;
-        }
-
-        if( $line =~ /^([0-9a-zA-Z]+\.)+[0-9a-zA-Z]*(Exception|Error)/ ) {
-            $exceptioncnt++;
-        }
-    }
-}
-
-
-
 #output the result
 print "logfile=$LogFile\n";
 print "totalrecord=$totalrecord\n";
 print "status500cnt=$status500cnt\n";
-print "exceptioncnt=$exceptioncnt\n";
 for my $key (keys %costmap) {
     print "$key=$costmap{$key}\n";
 }

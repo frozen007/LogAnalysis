@@ -1,7 +1,9 @@
 package com.changyou.loganalysis.config;
 
 import java.io.File;
-import java.util.Date;
+import java.io.FilenameFilter;
+
+import com.changyou.loganalysis.LogAnalysisUtil;
 
 public abstract class LogEntity {
 
@@ -11,6 +13,7 @@ public abstract class LogEntity {
     protected String logSeparator;
     protected String logCostunit;
     protected String errFile;
+    protected String errFilePattern;
 
     public String getDir() {
         return dir;
@@ -60,5 +63,32 @@ public abstract class LogEntity {
         this.errFile = errFile;
     }
 
+    public String getErrFilePattern() {
+        return errFilePattern;
+    }
+
+    public void setErrFilePattern(String errFilePattern) {
+        this.errFilePattern = errFilePattern;
+    }
+
     public abstract File[] getLogFiles(String parentPath);
+
+    public File[] getErrFiles(String parentPath) {
+        if(!LogAnalysisUtil.isNull(errFile)) {
+            return new File[] { new File(parentPath + "/" + dir + "/" + LogAnalysisUtil.parseLogFilename(errFile)) };
+        }
+
+        File dirFile = new File(parentPath + "/" + dir);
+        final String resolvedFilePattern = LogAnalysisUtil.parseLogFilename(errFilePattern);
+        File[] errfiles = dirFile.listFiles(new FilenameFilter() {
+
+            public boolean accept(File dir, String name) {
+                if (name.matches(resolvedFilePattern)) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        return errfiles;
+    }
 }

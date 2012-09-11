@@ -4,7 +4,7 @@
     <groupId>com.changyou.loganalysis</groupId>
     <artifactId>loganalysis</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>loganalysis</name>
     <url>http://maven.apache.org</url>
     <build>

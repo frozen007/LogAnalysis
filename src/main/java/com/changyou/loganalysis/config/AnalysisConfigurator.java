@@ -62,9 +62,9 @@ public class AnalysisConfigurator {
     protected LogAnalysisConfig digestConfig(String configFile) throws Exception {
         Digester d = new Digester();
         d.addObjectCreate("log-analysis", "com.changyou.loganalysis.config.LogAnalysisConfig");
-        d.addSetNestedProperties("log-analysis/analysis-worker", new String[] { "script-exec", "script-file",
-                "report-path", "thread-pool-size" }, new String[] { "scriptExec", "scriptFile", "reportPath",
-                "threadPoolSize" });
+        d.addSetNestedProperties("log-analysis/analysis-worker", new String[] { "script-exec", "log-script",
+                "err-script", "report-path", "thread-pool-size" }, new String[] { "scriptExec", "logScript",
+                "errScript", "reportPath", "threadPoolSize" });
 
         String pattern = "log-analysis/profile";
         d.addObjectCreate(pattern, "com.changyou.loganalysis.config.ProfileConfig");
@@ -81,16 +81,18 @@ public class AnalysisConfigurator {
 
         pattern = "log-analysis/log-config/log";
         d.addObjectCreate(pattern, "com.changyou.loganalysis.config.LogFile");
-        d.addSetProperties(pattern, new String[] { "file", "err-file", "memo" }, new String[] { "file", "errFile",
-                "memo" });
+        d.addSetProperties(pattern, new String[] { "file", "err-file", "err-file-pattern", "memo" }, new String[] {
+                "file", "errFile", "errFilePattern", "memo" });
         d.addSetNestedProperties(pattern, new String[] { "log-format", "log-separator", "log-costunit" }, new String[] {
                 "logFormat", "logSeparator", "logCostunit" });
         d.addSetNext(pattern, "addLogEntity");
 
         pattern = "log-analysis/log-config/log-group";
         d.addObjectCreate(pattern, "com.changyou.loganalysis.config.LogGroup");
-        d.addSetProperties(pattern, new String[] { "dir", "file-pattern", "err-file", "memo" }, new String[] { "dir",
-                "filePattern", "errFile", "memo" });
+        d.addSetProperties(
+                           pattern,
+                           new String[] { "dir", "file-pattern", "err-file", "err-file-pattern", "memo" },
+                           new String[] { "dir", "filePattern", "errFile", "errFilePattern", "memo" });
         d.addSetNestedProperties(pattern, new String[] { "log-format", "log-separator", "log-costunit" }, new String[] {
                 "logFormat", "logSeparator", "logCostunit" });
         d.addSetNext(pattern, "addLogEntity");

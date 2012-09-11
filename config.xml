@@ -3,7 +3,8 @@
 
     <analysis-worker>
         <script-exec>/usr/bin/perl</script-exec>
-        <script-file>/home/webadmin/loganalysis/script/loganalisys.pl</script-file>
+        <log-script>/home/webadmin/loganalysis/script/loganalysis.pl</log-script>
+        <err-script>/home/webadmin/loganalysis/script/erranalysis.pl</err-script>
         <report-path>report</report-path>
         <thread-pool-size>30</thread-pool-size>
     </analysis-worker>
@@ -61,18 +62,18 @@
         <log file="154_213/access.log.${date:yyyyMMdd}" err-file="" memo="移动统计系统_154_213" />
 
         <!--HR招聘系统前台-->
-        <log file="64_128/access.log.${date:yyyyMMdd}" err-file="" memo="HR招聘系统前台_64_128" />
+        <log file="64_128/access.log.${date:yyyyMMdd}" err-file="64_128/stderr-${date:yyyy_MM_dd}.log" memo="HR招聘系统前台_64_128" />
 
         <!--渠道系统后台-->
-        <log file="19_129/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统后台_19_129" />
+        <log file="19_129/access.log.${date:yyyyMMdd}" err-file="19_129/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统后台_19_129" />
 
         <!--渠道系统前台-->
-        <log file="74_104/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_74_104" />
-        <log file="74_198/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_74_198" />
-        <log file="74_199/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_74_199" />
-        <log file="154_54/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_154_54" />
-        <log file="154_55/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_154_55" />
-        <log file="154_56/access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_154_56" />
+        <log file="74_104/access.log.${date:yyyyMMdd}" err-file="74_104/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_74_104" />
+        <log file="74_198/access.log.${date:yyyyMMdd}" err-file="74_198/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_74_198" />
+        <log file="74_199/access.log.${date:yyyyMMdd}" err-file="74_199/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_74_199" />
+        <log file="154_54/access.log.${date:yyyyMMdd}" err-file="154_54/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_154_54" />
+        <log file="154_55/access.log.${date:yyyyMMdd}" err-file="154_55/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_154_55" />
+        <log file="154_56/access.log.${date:yyyyMMdd}" err-file="154_56/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_154_56" />
 
         <!--畅游新OA系统-->
         <log file="64_130/access.log.${date:yyyyMMdd}" err-file="" memo="畅游新OA系统_64_130" />

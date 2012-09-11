@@ -2,14 +2,27 @@
 <log-analysis>
 
     <analysis-worker>
-        <script-exec>D:/lab/Perl/bin/perl.exe</script-exec>
-        <script-file>D:/mydoc/work/loganalisys/loganalysis/script/loganalisys.pl</script-file>
-        <report-path>report</report-path>
-        <thread-pool-size>20</thread-pool-size>
+        <script-exec>${perl.path}</script-exec>
+        <log-script>${loganalysis.home}/script/loganalysis.pl</log-script>
+        <err-script>${loganalysis.home}/script/erranalysis.pl</err-script>
+        <report-path>${loganalysis.home}/report</report-path>
+        <thread-pool-size>30</thread-pool-size>
     </analysis-worker>
 
-    <profile name="resin">
+    <profile name="resin1">
         <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>us</log-costunit>
+    </profile>
+
+    <profile name="resin2">
+        <log-format>%host %other %other %time1 %methodurl %code %bytesd %otherquot %otherquot %costquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>s</log-costunit>
+    </profile>
+
+    <profile name="resin3">
+        <log-format>%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot %otherquot</log-format>
         <log-separator> </log-separator>
         <log-costunit>us</log-costunit>
     </profile>
@@ -38,22 +51,15 @@
         <log-costunit>s</log-costunit>
     </profile>
 
-    <log-config name="nginx3-config" profile="nginx3" parent-path="D:/mydoc/work/loganalisys/log/nginxlog">
-        <!--account
-        <log file="'17_209/host.access.log.'yyyyMMddxx" err-file="" memo="account_17_209"/>
-        <log file="'17_211/host.access.log.'yyyyMMddxx" err-file="" memo="account_17_211"/>
-        <log file="'64_45/host.access.log.'yyyyMMddxx" err-file="" memo="account_64_45"/>
-        <log file="'64_67/host.access.log.'yyyyMMddxx" err-file="" memo="account_64_67"/>
-        -->
+    <profile name="nginx4">
+        <log-format>%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot %otherquot %otherquot %otherquot %otherquot %costquot</log-format>
+        <log-separator> </log-separator>
+        <log-costunit>s</log-costunit>
+    </profile>
 
-        <!--活动系统
-        <log file="'64_175/host.access.log.'yyyyMMddxx" err-file="" memo="活动系统_64_175"/>
-        <log file="'64_176/host.access.log.'yyyyMMddxx" err-file="" memo="活动系统_64_176"/>
-        -->
-        <log-group dir="64_175" file-pattern="host.access.log.${date:yyyyMMdd}01" err-file="" memo="活动系统_64_175" />
-        <!-- 
-        <log-group dir="64_176" file-pattern="host.access.log.${date:yyyyMMdd}*" err-file="" memo="活动系统_64_176" />
-        -->
+    <log-config name="resin1-resinlog" profile="resin1" parent-path="D:/mydoc/work/loganalisys/log/resinlog">
 
+        <log dir="64_126" file="access.log.${date:yyyyMMdd}" err-file-pattern="astderr-${date:yyyy_MM_dd}.log*" memo="客服后台系统_64_126" />
     </log-config>
+
 </log-analysis>
