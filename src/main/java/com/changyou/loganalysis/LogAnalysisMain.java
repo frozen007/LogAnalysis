@@ -62,6 +62,8 @@ public class LogAnalysisMain {
 
         ArrayList<AnalysisWorker> workerList = new ArrayList<AnalysisWorker>();
 
+        long totalFileLength = 0;
+        long beginTime = System.currentTimeMillis();
         HashMap<String, ProfileConfig> profileMap = config.getProfiles();
         for (LogConfig logConfig : config.getLogConfigList()) {
             ProfileConfig pc = profileMap.get(logConfig.getProfile());
@@ -86,6 +88,7 @@ public class LogAnalysisMain {
                             continue;
                         }
 
+                        totalFileLength +=logfile.length();
                         AnalysisWorker worker = new LogAnalysisWorker(
                                                                       log.getMemo(),
                                                                       logfileStr,
@@ -107,6 +110,7 @@ public class LogAnalysisMain {
                                 continue;
                             }
 
+                            totalFileLength +=errFile.length();
                             AnalysisWorker worker = new ErrAnalysisWorker(log.getMemo(), errfileStr);
                             workerList.add(worker);
                         }
@@ -169,6 +173,8 @@ public class LogAnalysisMain {
         writer.flush();
 
         logger.info("LogAnalysis Ends");
+        logger.info("Total length of files that have been analyzed: " + totalFileLength / 1024 + "KB");
+        logger.info("Total time taken to complete the analysis:" + (System.currentTimeMillis() - beginTime) + "ms");
 
         String antScript = System.getProperty("send.mail.script", "sendmail.xml");
         Properties props = new Properties();
