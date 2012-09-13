@@ -139,20 +139,20 @@ public class LogAnalysisMain {
         props.put("analysisdate", analysisDateStr);
 
         String reportFileName = "analysis_" + sdf.format(analysisDate);
-        File csvReportFile = null;
         try {
-            csvReportFile = ReportUtil
+            File csvReportFile = ReportUtil
                                       .generateAnalysisCSVReport(
                                                                  config.getReportPath() + "/" + reportFileName + ".csv",
                                                                  statList);
 
-            props.put("resultfile.path", csvReportFile.getAbsolutePath());
-            props.put("resultfile", csvReportFile.getName());
-
-            ReportUtil.generateAnalysisXLSReport(
+            File xlsReportFile = ReportUtil.generateAnalysisXLSReport(
                                                  config.getReportPath() + "/analysis_template.xls",
                                                  config.getReportPath() + "/" + reportFileName + ".xls",
                                                  statList);
+
+            props.put("resultfile.path", csvReportFile.getAbsolutePath() + "," + xlsReportFile.getAbsolutePath());
+            props.put("resultfile", csvReportFile.getName() + "," + xlsReportFile.getName());
+
         } catch (Exception e) {
             logger.error("Error when generating analysis report:", e);
         }

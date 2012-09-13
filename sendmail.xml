@@ -22,6 +22,10 @@
             <message>技术开发部各站点日志分析结果
 
 日志所属日期：${analysisdate}，更多信息请看附件${resultfile}。
+
+
+Updates:
+v1.2 2012-09-13 增加Excel表格报告格式
             </message>
         </mail>
     </target>

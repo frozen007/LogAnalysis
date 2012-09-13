@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="sdmail" default="sendmail">
+    <target name="sendmail">
+        <mail mailhost="smtp.cyou-inc.com" mailport="25" 
+            subject="网站日志分析报告-${analysisdate}" charset="UTF-8">
+            
+            <from address="zhaomingyu@cyou-inc.com" />
+            <replyto address="zhaomingyu@cyou-inc.com" />
+            <to address="zhaomingyu@cyou-inc.com" />
+            <message>技术开发部各站点日志分析结果
+
+日志所属日期：${analysisdate}，更多信息请看附件${resultfile}。
+            </message>
+        </mail>
+    </target>
+</project>
