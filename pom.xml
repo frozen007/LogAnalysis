@@ -4,7 +4,7 @@
     <groupId>com.changyou.loganalysis</groupId>
     <artifactId>loganalysis</artifactId>
     <packaging>jar</packaging>
-    <version>1.1</version>
+    <version>1.2</version>
     <name>loganalysis</name>
     <url>http://maven.apache.org</url>
     <build>
@@ -52,5 +52,18 @@
             <artifactId>ant-javamail</artifactId>
             <version>1.8.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-jexl</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+
     </dependencies>
 </project>

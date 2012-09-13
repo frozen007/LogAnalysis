@@ -1,10 +1,10 @@
 package com.changyou.loganalysis;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -128,59 +128,36 @@ public class LogAnalysisMain {
         }
         monitor.waitForFinish();
 
-        File resultFile = new File(config.getReportPath(), "analysis_" + sdf.format(analysisDate) + ".csv");
-        resultFile.getParentFile().mkdir();
-        logger.info("Generating analysis result:" + resultFile.getAbsolutePath());
-
-        PrintWriter writer = new PrintWriter(resultFile, "GBK");
-        StringBuilder buf = new StringBuilder();
-        // header
-        writer.println("服务器,响应时间<1S,比例,响应时间1~3s,比例,响应时间3~10s,比例,响应时间>=10s,比例,500错误页面量,比例,exception数量,日志");
-        Map<String, LogStatistic> statisticMap = LogAnalysisMonitor.getInstance().getStatisticMap();
-        for (String servername : statisticMap.keySet()) {
-            LogStatistic statistic = statisticMap.get(servername);
-            buf.setLength(0);
-            buf.append(statistic.servername).append(",");
-            buf
-               .append(statistic.cost0_1s)
-               .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost0_1s / statistic.totalrecord, 4))
-               .append(",");
-            buf
-               .append(statistic.cost1_3s)
-               .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost1_3s / statistic.totalrecord, 4))
-               .append(",");
-            buf
-               .append(statistic.cost3_10s)
-               .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost3_10s / statistic.totalrecord, 4))
-               .append(",");
-            buf
-               .append(statistic.cost10s)
-               .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.cost10s / statistic.totalrecord, 4))
-               .append(",");
-            buf
-               .append(statistic.status500)
-               .append(",")
-               .append(LogAnalysisUtil.round((double) statistic.status500 / statistic.totalrecord, 4))
-               .append(",");
-            buf.append(statistic.exceptioncnt).append(",");
-            buf.append(statistic.logfile);
-            writer.println(buf.toString());
-        }
-        writer.flush();
-
         logger.info("LogAnalysis Ends");
         logger.info("Total length of files that have been analyzed: " + totalFileLength / 1024 + "KB");
         logger.info("Total time taken to complete the analysis:" + (System.currentTimeMillis() - beginTime) + "ms");
 
-        String antScript = System.getProperty("send.mail.script", "sendmail.xml");
+        Map<String, LogStatistic> statisticMap = LogAnalysisMonitor.getInstance().getStatisticMap();
+        Collection<LogStatistic> statList = statisticMap.values();
+
         Properties props = new Properties();
         props.put("analysisdate", analysisDateStr);
-        props.put("resultfile.path", resultFile.getAbsolutePath());
-        props.put("resultfile", resultFile.getName());
+
+        String reportFileName = "analysis_" + sdf.format(analysisDate);
+        File csvReportFile = null;
+        try {
+            csvReportFile = ReportUtil
+                                      .generateAnalysisCSVReport(
+                                                                 config.getReportPath() + "/" + reportFileName + ".csv",
+                                                                 statList);
+
+            props.put("resultfile.path", csvReportFile.getAbsolutePath());
+            props.put("resultfile", csvReportFile.getName());
+
+            ReportUtil.generateAnalysisXLSReport(
+                                                 config.getReportPath() + "/analysis_template.xls",
+                                                 config.getReportPath() + "/" + reportFileName + ".xls",
+                                                 statList);
+        } catch (Exception e) {
+            logger.error("Error when generating analysis report:", e);
+        }
+
+        String antScript = System.getProperty("send.mail.script", "sendmail.xml");
         AntRunner.runAntScript(antScript, "sendmail", props);
     }
 }
