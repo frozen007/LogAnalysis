@@ -74,6 +74,9 @@
         <log file="154_54/access.log.${date:yyyyMMdd}" err-file="154_54/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_154_54" />
         <log file="154_55/access.log.${date:yyyyMMdd}" err-file="154_55/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_154_55" />
         <log file="154_56/access.log.${date:yyyyMMdd}" err-file="154_56/stderr-${date:yyyy_MM_dd}.log" memo="渠道系统前台_154_56" />
+        <log dir="64_177" file="access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_64_177" />
+        <log dir="64_178" file="access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_64_178" />
+        <log dir="64_179" file="access.log.${date:yyyyMMdd}" err-file="" memo="渠道系统前台_64_179" />
 
         <!--畅游新OA系统-->
         <log file="64_130/access.log.${date:yyyyMMdd}" err-file="" memo="畅游新OA系统_64_130" />
