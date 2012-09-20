@@ -30,7 +30,7 @@ public class LogAnalysisWorker extends AnalysisWorker {
     protected Process createAnalysisProcess() throws Exception {
         logger.debug("file=" + file + ", logformat=\"" + logformat + "\", logseperator=\"" + logseperator
                      + "\", logcostunit=" + logcostunit);
-        String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, file, logformat, logseperator, logcostunit};
+        String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, servername, file, logformat, logseperator, logcostunit};
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmdArr, null, new File(SCRIPT_FILE_DIR));
