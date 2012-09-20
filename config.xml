@@ -60,6 +60,7 @@
     <log-config name="resin1-resinlog" profile="resin1" parent-path="/home/resinlog">
         <!--移动统计系统-->
         <log file="154_213/access.log.${date:yyyyMMdd}" err-file="" memo="移动统计系统_154_213" />
+        <log file="154_213/new/access.log.${date:yyyyMMdd}" err-file="" memo="移动统计系统_154_213_new" />
 
         <!--HR招聘系统前台-->
         <log file="64_128/access.log.${date:yyyyMMdd}" err-file="64_128/stderr-${date:yyyy_MM_dd}.log" memo="HR招聘系统前台_64_128" />
