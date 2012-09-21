@@ -15,6 +15,7 @@ my $MongoPort=27017;
 my $MongoCollection="logstat";
 
 my $Debug=0;
+my $LogDetailDebug=0;
 
 =options
 #LogFormat      -format="xxxxxx"
@@ -32,11 +33,9 @@ my $Debug=0;
 GetOptions(
     'format=s'=>\$LogFormat, 'sep=s'=>\$LogSeparator, 'cu=s'=>\$LogCostUnit, 
     'mongohost=s'=>\$MongoHost, 'mongoport=s'=>\$MongoPort, 'mongocol=s'=>\$MongoCollection, 
-    'debug'=>\$Debug);
+    'debug'=>\$Debug, 'logdebug'=>\$LogDetailDebug);
 
 my $LogFile=shift;
-
-my $MainThreadOver : shared = 0;
 
 =log thread
 #initialize a queue and a thread for recording log to db
@@ -51,8 +50,9 @@ my $thr = threads->create(sub {
         $logdb = $conn->logdb;
         $logcoll = $logdb->get_collection($MongoCollection);
     };
-    THREAD_WHILE:while(1) {
-        if ($Debug) {print "workers idle...\n";}
+    my $canwork=1;
+    THREAD_WHILE:while($canwork) {
+        if ($Debug) {print "worker idle...\n";}
         my @log_arr_ref_list = [];
         {
             lock($LogQueue);
@@ -61,16 +61,17 @@ my $thr = threads->create(sub {
             if($pendingCnt>0) {
                 @log_arr_ref_list = $LogQueue->dequeue_nb($pendingCnt);
             } else {
-                if($MainThreadOver eq 1) {
-                    if($Debug) {print "no log...\n";}
-                    last THREAD_WHILE;
-                } else {
-                    cond_wait($LogQueue);
-                    next;
-                }
+                cond_wait($LogQueue);
+                next THREAD_WHILE;
             }
+
         }
         foreach my $log_arr_ref (@log_arr_ref_list) {
+            if(scalar(@{$log_arr_ref}) eq 0) {
+                if ($Debug) {print "no log worker halted...\n";}
+                $canwork=0;
+                last THREAD_WHILE;
+            }
             if($logcoll) {
                 foreach my $log_ele (@{$log_arr_ref}) {
                     my $url = @{$log_ele}[0];
@@ -82,6 +83,7 @@ my $thr = threads->create(sub {
             if($Debug) {print "records that worker processed:", scalar(@{$log_arr_ref}), "\n";}
         }
     }
+    $logcoll->ensure_index({"cost"=>1});
 });
 
 &DefinePerlParsingFormat($LogFormat, $LogSeparator);
@@ -162,7 +164,7 @@ while(<LOG>) {
         }
     }
 
-    if($Debug) {
+    if($LogDetailDebug) {
         print "fieldList:";
         foreach my $f (@fieldList) {
             print $f, "\t";
@@ -203,19 +205,18 @@ while(<LOG>) {
     }
 
 }
-$MainThreadOver=1;
 =final dispatch
 =cut
 {
+    $LogQueue->enqueue($log_arr_ref);
+    $log_arr_ref = [];
     $LogQueue->enqueue($log_arr_ref);
     lock($LogQueue);
     cond_signal($LogQueue);
 }
 
 
-if($Debug) {
-    print "waiting for worker finish\n";
-}
+if($Debug) {print "waiting for worker finish\n";}
 $thr->join();
 
 
