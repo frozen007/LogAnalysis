@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="sdmail" default="sendmail">
     <target name="sendmail">
-        <mail mailhost="127.0.0.1" mailport="25" 
+        <mail mailhost="smtp.cyou-inc.com" mailport="25" 
             subject="网站日志分析报告-${analysisdate}" charset="UTF-8" files="${resultfile.path}">
             
             <from address="zhaomingyu@cyou-inc.com" />

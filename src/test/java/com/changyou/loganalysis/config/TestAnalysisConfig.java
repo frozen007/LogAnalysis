@@ -67,4 +67,11 @@ public class TestAnalysisConfig extends TestCase {
         System.out.println(sample3);
         System.out.println(sample.matches(sample3));
     }
+
+    public void test004() {
+        String str1 = new String("HR招聘系统前台_64_128");
+        String str2 = new String("HR招聘系统前台_64_128");
+        System.out.println(str1.hashCode());
+        System.out.println(str2.hashCode());
+    }
 }

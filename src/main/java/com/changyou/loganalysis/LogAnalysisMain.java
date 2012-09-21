@@ -90,7 +90,7 @@ public class LogAnalysisMain {
 
                         totalFileLength +=logfile.length();
                         AnalysisWorker worker = new LogAnalysisWorker(
-                                                                      log.getMemo(),
+                                                                      log,
                                                                       logfileStr,
                                                                       logformat,
                                                                       logseparator,
@@ -111,7 +111,7 @@ public class LogAnalysisMain {
                             }
 
                             totalFileLength +=errFile.length();
-                            AnalysisWorker worker = new ErrAnalysisWorker(log.getMemo(), errfileStr);
+                            AnalysisWorker worker = new ErrAnalysisWorker(log, errfileStr);
                             workerList.add(worker);
                         }
                     }

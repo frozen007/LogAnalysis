@@ -14,6 +14,7 @@ public abstract class LogEntity {
     protected String logCostunit;
     protected String errFile;
     protected String errFilePattern;
+    protected String uniqueID;
 
     public String getDir() {
         return dir;
@@ -69,6 +70,14 @@ public abstract class LogEntity {
 
     public void setErrFilePattern(String errFilePattern) {
         this.errFilePattern = errFilePattern;
+    }
+
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
     }
 
     public abstract File[] getLogFiles(String parentPath);

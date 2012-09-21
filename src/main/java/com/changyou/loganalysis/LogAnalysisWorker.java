@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import com.changyou.loganalysis.config.AnalysisConfigurator;
+import com.changyou.loganalysis.config.LogEntity;
 
 public class LogAnalysisWorker extends AnalysisWorker {
     private static Logger logger = Logger.getLogger(LogAnalysisWorker.class);
@@ -19,9 +20,9 @@ public class LogAnalysisWorker extends AnalysisWorker {
     private String logseperator;
     private String logcostunit;
 
-    public LogAnalysisWorker(String servername, String file, String logformat, String logseperator,
+    public LogAnalysisWorker(LogEntity logentity, String file, String logformat, String logseperator,
             String logcostunit) {
-        super(servername, file);
+        super(logentity, file);
         this.logformat = logformat;
         this.logseperator = logseperator;
         this.logcostunit = logcostunit;
@@ -32,8 +33,9 @@ public class LogAnalysisWorker extends AnalysisWorker {
     protected Process createAnalysisProcess() throws Exception {
         logger.debug("file=" + file + ", logformat=\"" + logformat + "\", logseperator=\"" + logseperator
                      + "\", logcostunit=" + logcostunit);
-        String logCollectionName = "log" + analysisDateStr + "." + servername;
-        String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, logCollectionName, file, logformat, logseperator, logcostunit};
+        String logCollectionName = "log" + analysisDateStr + ".logstat" + logentity.getUniqueID();
+        String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, "-format", logformat, "-sep", logseperator, "-cu",
+                logcostunit, "-mongocol", logCollectionName, file };
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmdArr, null, new File(SCRIPT_FILE_DIR));

@@ -2,25 +2,39 @@ use threads;
 use threads::shared;
 use Thread::Queue;
 use MongoDB;
+use Getopt::Long;
 require ("parsingformat.pl");
 
-my $LogCollectionName=shift;
+my $LogFormat="%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot";
+my $LogSeparator=" ";
+my $LogCostUnit="us";
+
+#default MongoDB options
+my $MongoHost="localhost";
+my $MongoPort=27017;
+my $MongoCollection="logstat";
+
+my $Debug=0;
+
+=options
+#LogFormat      -format="xxxxxx"
+
+#LogSeparator   -sep=" "
+
+#LogCostUnit    -cu=us
+
+#MongDB Option
+    -mongohost  ip
+    -mongoport  port
+    -mongocol   collections
+
+=cut
+GetOptions(
+    'format=s'=>\$LogFormat, 'sep=s'=>\$LogSeparator, 'cu=s'=>\$LogCostUnit, 
+    'mongohost=s'=>\$MongoHost, 'mongoport=s'=>\$MongoPort, 'mongocol=s'=>\$MongoCollection, 
+    'debug'=>\$Debug);
+
 my $LogFile=shift;
-my $LogFormat=shift;
-my $LogSeparator=shift;
-my $LogCostUnit=shift;
-
-#$Debug=1;
-
-if($LogFormat eq '') {
-    $LogFormat="%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot";
-}
-if($LogSeparator eq '') {
-    $LogSeparator=" ";
-}
-if($LogCostUnit eq '') {
-    $LogCostUnit="us";
-}
 
 my $MainThreadOver : shared = 0;
 
@@ -29,10 +43,16 @@ my $MainThreadOver : shared = 0;
 =cut
 my $LogQueue = Thread::Queue->new();
 my $thr = threads->create(sub {
-    my $conn = MongoDB::Connection->new(host=>'localhost', port=>27017);
-    my $logdb = $conn->logdb;
-    my $logcoll = $logdb->get_collection($LogCollectionName);
+    my $conn;
+    my $logdb;
+    my $logcoll;
+    eval{
+        $conn = MongoDB::Connection->new(host=>${MongoHost}, port=>${MongoPort});
+        $logdb = $conn->logdb;
+        $logcoll = $logdb->get_collection($MongoCollection);
+    };
     THREAD_WHILE:while(1) {
+        if ($Debug) {print "workers idle...\n";}
         my @log_arr_ref_list = [];
         {
             lock($LogQueue);
@@ -42,7 +62,7 @@ my $thr = threads->create(sub {
                 @log_arr_ref_list = $LogQueue->dequeue_nb($pendingCnt);
             } else {
                 if($MainThreadOver eq 1) {
-                    print "no log...\n";                
+                    if($Debug) {print "no log...\n";}
                     last THREAD_WHILE;
                 } else {
                     cond_wait($LogQueue);
@@ -50,16 +70,17 @@ my $thr = threads->create(sub {
                 }
             }
         }
-
         foreach my $log_arr_ref (@log_arr_ref_list) {
-            foreach my $log_ele (@{$log_arr_ref}) {
-                my $url = @{$log_ele}[0];
-                my $cost = oct(@{$log_ele}[1]);
-                #{"url"=>$self->url, "cost"=>$self->cost}
-                $logcoll->insert({"url"=>$url, "cost"=>$cost});
+            if($logcoll) {
+                foreach my $log_ele (@{$log_arr_ref}) {
+                    my $url = @{$log_ele}[0];
+                    my $cost = int(@{$log_ele}[1]);
+                    #{"url"=>$self->url, "cost"=>$self->cost}
+                    $logcoll->insert({"url"=>$url, "cost"=>$cost});
+                }
             }
+            if($Debug) {print "records that worker processed:", scalar(@{$log_arr_ref}), "\n";}
         }
-        
     }
 });
 
@@ -77,7 +98,7 @@ if ($Debug) {
 
 
 my $costKeyLen = 4;
-
+my $costStatRecordLevel = 2;
 my @costStatConfig = (0, 1, 3, 10);
 =LogCostUnit
 # us=microsecond
@@ -129,14 +150,16 @@ while(<LOG>) {
 =dispatch log record
 #    my $httplog = HttpRequestLog->new(url=>$url, cost=>$cost);
 =cut
-    my $httplog = [$url, $cost];
-    push(@{$log_arr_ref}, $httplog);
-
-    if($totalrecord % 1000 eq 0) {
-        $LogQueue->enqueue($log_arr_ref);
-        lock($LogQueue);
-        $log_arr_ref = [];
-        cond_signal($LogQueue);
+    if($cost >= @costStatConfig[$costStatRecordLevel]) {
+        my $httplog = [$url, $cost];
+        push(@{$log_arr_ref}, $httplog);
+    
+        if($totalrecord % 1000 eq 0) {
+            $LogQueue->enqueue($log_arr_ref);
+            lock($LogQueue);
+            $log_arr_ref = [];
+            cond_signal($LogQueue);
+        }
     }
 
     if($Debug) {
@@ -180,6 +203,7 @@ while(<LOG>) {
     }
 
 }
+$MainThreadOver=1;
 =final dispatch
 =cut
 {
@@ -188,9 +212,10 @@ while(<LOG>) {
     cond_signal($LogQueue);
 }
 
-$MainThreadOver=1;
 
-print "waiting for worker finish\n";
+if($Debug) {
+    print "waiting for worker finish\n";
+}
 $thr->join();
 
 

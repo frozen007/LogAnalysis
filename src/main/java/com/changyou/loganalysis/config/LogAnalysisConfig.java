@@ -2,6 +2,7 @@ package com.changyou.loganalysis.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.changyou.loganalysis.LogAnalysisUtil;
@@ -15,6 +16,7 @@ public class LogAnalysisConfig {
     private int threadPoolSize = 20;
     private HashMap<String, ProfileConfig> profileMap = new HashMap<String, ProfileConfig>();
     private ArrayList<LogConfig> logConfigList = new ArrayList<LogConfig>();
+    private LinkedHashMap<String, LogEntity> logEntityMap = new LinkedHashMap<String, LogEntity>();
 
     public String getScriptExec() {
         return scriptExec;
@@ -61,5 +63,16 @@ public class LogAnalysisConfig {
     
     public void addLogConfig(LogConfig lc) {
         this.logConfigList.add(lc);
+        int counter = logEntityMap.size();
+        for (LogEntity entity : lc.getLogEntities()) {
+            String uniqueID = String.valueOf(counter);
+            entity.setUniqueID(uniqueID);
+            this.logEntityMap.put(uniqueID, entity);
+            counter++;
+        }
+    }
+
+    public LogEntity getLogEntityByUniqueID(String uniqueID) {
+        return this.logEntityMap.get(uniqueID);
     }
 }
