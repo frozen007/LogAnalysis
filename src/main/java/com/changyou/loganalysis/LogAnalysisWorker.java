@@ -13,6 +13,8 @@ public class LogAnalysisWorker extends AnalysisWorker {
 
     private static String SCRIPT_FILE_DIR = LOG_SCRIPT.substring(0, LOG_SCRIPT.lastIndexOf("/"));
 
+    private static String analysisDateStr = System.getProperty(LogAnalysisUtil.PARAM_KEY_ANALYSISDATE);
+
     private String logformat;
     private String logseperator;
     private String logcostunit;
@@ -30,7 +32,8 @@ public class LogAnalysisWorker extends AnalysisWorker {
     protected Process createAnalysisProcess() throws Exception {
         logger.debug("file=" + file + ", logformat=\"" + logformat + "\", logseperator=\"" + logseperator
                      + "\", logcostunit=" + logcostunit);
-        String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, servername, file, logformat, logseperator, logcostunit};
+        String logCollectionName = "log" + analysisDateStr + "." + servername;
+        String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, logCollectionName, file, logformat, logseperator, logcostunit};
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmdArr, null, new File(SCRIPT_FILE_DIR));

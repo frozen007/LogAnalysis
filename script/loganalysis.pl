@@ -4,7 +4,7 @@ use Thread::Queue;
 use MongoDB;
 require ("parsingformat.pl");
 
-my $LogServerName=shift;
+my $LogCollectionName=shift;
 my $LogFile=shift;
 my $LogFormat=shift;
 my $LogSeparator=shift;
@@ -31,7 +31,7 @@ my $LogQueue = Thread::Queue->new();
 my $thr = threads->create(sub {
     my $conn = MongoDB::Connection->new(host=>'localhost', port=>27017);
     my $logdb = $conn->logdb;
-    my $logcoll = $logdb->get_collection($LogServerName);
+    my $logcoll = $logdb->get_collection($LogCollectionName);
     THREAD_WHILE:while(1) {
         my @log_arr_ref_list = [];
         {
@@ -54,7 +54,7 @@ my $thr = threads->create(sub {
         foreach my $log_arr_ref (@log_arr_ref_list) {
             foreach my $log_ele (@{$log_arr_ref}) {
                 my $url = @{$log_ele}[0];
-                my $cost = @{$log_ele}[1];
+                my $cost = oct(@{$log_ele}[1]);
                 #{"url"=>$self->url, "cost"=>$self->cost}
                 $logcoll->insert({"url"=>$url, "cost"=>$cost});
             }
@@ -78,18 +78,23 @@ if ($Debug) {
 
 my $costKeyLen = 4;
 
-my @costStatConfig = ();
+my @costStatConfig = (0, 1, 3, 10);
 =LogCostUnit
 # us=microsecond
 # ms=millisecond
 # s=second
 =cut
+my $costUnitValue = 1;
 if($LogCostUnit eq 'us') {
-    @costStatConfig = (0, 1000000, 3000000, 10000000); #microsecond
+    $costUnitValue = 1000000;
 } elsif($LogCostUnit eq 'ms') {
-    @costStatConfig = (0, 1000, 3000, 10000); #millisecond
+    $costUnitValue = 1000;
 } else {
-    @costStatConfig = (0, 1, 3, 10); #millisecond
+    $costUnitValue = 1;
+}
+
+for my $config_id (0..$#costStatConfig) {
+    @costStatConfig[$config_id] *= $costUnitValue;
 }
 
 my @costKeyList = ("cost0_1s", "cost1_3s", "cost3_10s", "cost10s");
