@@ -39,7 +39,8 @@ public class TestMongo extends TestCase {
             System.out.println(itO.next());
         }
         
-        
+        DBCollection tmp = db.getCollection("shit");
+        System.out.println(tmp.count());
         
     }
 }

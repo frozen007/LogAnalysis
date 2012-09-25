@@ -6,7 +6,7 @@
         <log-script>${loganalysis.home}/script/loganalysis.pl</log-script>
         <err-script>${loganalysis.home}/script/erranalysis.pl</err-script>
         <report-path>${loganalysis.home}/report</report-path>
-        <thread-pool-size>30</thread-pool-size>
+        <thread-pool-size>5</thread-pool-size>
         <mongodb-host>192.168.56.101</mongodb-host>
         <mongodb-port>27017</mongodb-port>
     </analysis-worker>
@@ -62,10 +62,6 @@
     <log-config name="resin1-resinlog" profile="resin1" parent-path="D:/mydoc/work/loganalisys/log/resinlog">
 
         <log dir="64_126" file="access.log.${date:yyyyMMdd}" err-file-pattern="stderr-${date:yyyy_MM_dd}.log*" memo="客服后台系统_64_126" />
-    </log-config>
-
-    <log-config name="nginx1-config" profile="nginx1" parent-path="D:/mydoc/work/loganalisys/log/nginxlog">
-        <log file="17_55/${date:yyyyMMdd}.access_log" err-file="" memo="peak_17_55"/>
     </log-config>
 
 </log-analysis>

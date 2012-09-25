@@ -15,6 +15,7 @@ public class LogAnalysisUtil {
 
     public static final String PARAM_KEY_ANALYSISDATE = "date";
     public static final String PARAM_KEY_ANALYSISCONFIG = "config";
+    public static final String PARAM_KEY_DAEMON = "daemon";
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
@@ -56,6 +57,8 @@ public class LogAnalysisUtil {
                         throw new IllegalArgumentException("'" + PARAM_KEY_ANALYSISCONFIG + "' has no value");
                     }
                     paraMap.put(PARAM_KEY_ANALYSISCONFIG, args[index]);
+                } else if (("-" + PARAM_KEY_DAEMON).equals(args[index])) {
+                    paraMap.put(PARAM_KEY_DAEMON, "true");
                 }
                 index++;
 
@@ -63,15 +66,19 @@ public class LogAnalysisUtil {
         }
 
         if (analysisDateStr == null) {
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.DAY_OF_MONTH, -1);
-            analysisDateStr = sdf.format(c.getTime());
+            analysisDateStr = getPreAnalysisDate();
             paraMap.put(PARAM_KEY_ANALYSISDATE, analysisDateStr);
         }
 
         return paraMap;
     }
 
+    public static String getPreAnalysisDate() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, -1);
+        return sdf.format(c.getTime());
+    }
+    
     public static String parseLogFilename(String filename, VarParser parser) {
         String result = filename;
         try {

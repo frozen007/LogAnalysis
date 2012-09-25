@@ -16,7 +16,9 @@ import com.changyou.loganalysis.config.LogAnalysisConfig;
 import com.changyou.loganalysis.config.LogConfig;
 import com.changyou.loganalysis.config.LogEntity;
 import com.changyou.loganalysis.config.ProfileConfig;
+import com.changyou.loganalysis.server.LogAnalysisServer;
 import com.changyou.loganalysis.tool.LogVarParser;
+import com.mongodb.DB;
 
 public class LogAnalysisMain {
     private static Logger logger = Logger.getLogger(LogAnalysisMain.class);
@@ -25,33 +27,49 @@ public class LogAnalysisMain {
 
         HashMap<String, String> paraMap = LogAnalysisUtil.parseParam(args);
 
-        try {
-            LogAnalysisMain main = new LogAnalysisMain();
-            main.execAnalysiMain(paraMap);
-        } catch (Exception e) {
-            logger.error("error when execute analysis.", e);
+        init(paraMap);
+
+        if (paraMap.containsKey(LogAnalysisUtil.PARAM_KEY_DAEMON)) {
+            LogAnalysisServer server = new LogAnalysisServer();
+            server.startServer();
+        } else {
+            try {
+                LogAnalysisMain main = new LogAnalysisMain();
+                main.execAnalysiMain(paraMap);
+            } catch (Exception e) {
+                logger.error("error when execute analysis.", e);
+            }
+            System.exit(0);
         }
 
-        System.exit(0);
+    }
+
+    public static void init(HashMap<String, String> paraMap) {
+        String configFile = (String) paraMap.get(LogAnalysisUtil.PARAM_KEY_ANALYSISCONFIG);
+        if (configFile != null) {
+            AnalysisConfigurator.getInstance(configFile);
+        } else {
+            AnalysisConfigurator.getInstance();
+        }
     }
 
     public void execAnalysiMain(HashMap<String, String> paraMap) throws Exception {
 
         String analysisDateStr = (String) paraMap.get(LogAnalysisUtil.PARAM_KEY_ANALYSISDATE);
         LogVarParser varParser = new LogVarParser(paraMap);
-        LogAnalysisConfig config = null;
-        String configFile = (String) paraMap.get(LogAnalysisUtil.PARAM_KEY_ANALYSISCONFIG);
-        if (configFile != null) {
-            config = AnalysisConfigurator.getInstance(configFile).getConfig();
-        } else {
-            config = AnalysisConfigurator.getInstance().getConfig();
-        }
+        LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
 
         int threadpoolSize = config.getThreadPoolSize();
         ExecutorService executor = Executors.newFixedThreadPool(threadpoolSize);
 
         ArrayList<AnalysisWorker> workerList = new ArrayList<AnalysisWorker>();
 
+        DB logdb = null;
+        try {
+            logdb = MongoDBManager.getInstance().getLogDB();
+        } catch (Exception e) {
+            logger.error("error when get logdb from MongoDB", e);
+        }
         long totalFileLength = 0;
         long beginTime = System.currentTimeMillis();
         HashMap<String, ProfileConfig> profileMap = config.getProfiles();
@@ -66,7 +84,13 @@ public class LogAnalysisMain {
                 String logcostunit = LogAnalysisUtil.isNull(logentity.getLogCostunit()) ? pc.getLogCostunit()
                         : logentity.getLogCostunit();
 
-                String logCollectionName = "log" + analysisDateStr + ".logstat" + logentity.getUniqueID();
+                String logCollectionName = logentity.getLogCollectionName(analysisDateStr);
+
+                // clear collection
+                if (logdb != null) {
+                    logdb.getCollection(logCollectionName).drop();
+                }
+
                 File[] logfiles = logentity.getLogFiles(logConfig.getParentPath(), varParser);
                 if (logfiles == null || logfiles.length == 0) {
                     logger.info("log file not exists for :" + logentity.getMemo());

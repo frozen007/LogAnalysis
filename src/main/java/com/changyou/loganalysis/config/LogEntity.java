@@ -81,6 +81,10 @@ public abstract class LogEntity {
         this.uniqueID = uniqueID;
     }
 
+    public String getLogCollectionName(String analysisDateStr) {
+        return "log" + analysisDateStr + ".logstat" + uniqueID;
+    }
+    
     public abstract File[] getLogFiles(String parentPath, VarParser parser);
 
     public File[] getErrFiles(String parentPath, VarParser parser) {
