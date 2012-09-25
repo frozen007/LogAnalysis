@@ -4,13 +4,13 @@ import java.util.Map;
 
 public abstract class AbstractVarParser implements VarParser {
 
-    protected Map<String, Object> context = null;
+    protected Map<String, String> context = null;
 
-    public AbstractVarParser(Map<String, Object> context) {
+    public AbstractVarParser(Map<String, String> context) {
         this.context = context;
     }
 
-    public Object getVarValue(String var) {
+    public String getVarValue(String var) {
         if(context.containsKey(var)) {
             return context.get(var);
         } 

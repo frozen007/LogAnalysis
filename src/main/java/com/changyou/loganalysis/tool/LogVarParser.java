@@ -13,7 +13,7 @@ public class LogVarParser extends AbstractVarParser {
     private static final String VAR_DATE_PREFIX = "date:";
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     
-    public LogVarParser(Map<String, Object> context) {
+    public LogVarParser(Map<String, String> context) {
         super(context);
     }
 
@@ -32,7 +32,7 @@ public class LogVarParser extends AbstractVarParser {
                 }
             }
         } else {
-            String value = getVarValue(varName).toString();
+            String value = getVarValue(varName);
             if (value != null) {
                 return value;
             }

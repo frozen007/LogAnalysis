@@ -18,7 +18,7 @@ public class LogAnalysisUtil {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-    private static VarParser defaultParser = new LogVarParser(new HashMap<String,Object>());
+    private static VarParser defaultParser = new LogVarParser(new HashMap<String,String>());
 
     public static boolean isNull(String str) {
         if (str == null) {
@@ -37,8 +37,8 @@ public class LogAnalysisUtil {
         return result;
     }
 
-    public static HashMap<String, Object> parseParam(String[] args) {
-        HashMap<String, Object> paraMap = new HashMap<String, Object>();
+    public static HashMap<String, String> parseParam(String[] args) {
+        HashMap<String, String> paraMap = new HashMap<String, String>();
         String analysisDateStr = null;
         if (args != null && args.length > 0) {
             int index = 0;

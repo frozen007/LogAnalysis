@@ -23,7 +23,7 @@ public class LogAnalysisMain {
 
     public static void main(String[] args) throws Exception {
 
-        HashMap<String, Object> paraMap = LogAnalysisUtil.parseParam(args);
+        HashMap<String, String> paraMap = LogAnalysisUtil.parseParam(args);
 
         try {
             LogAnalysisMain main = new LogAnalysisMain();
@@ -35,7 +35,7 @@ public class LogAnalysisMain {
         System.exit(0);
     }
 
-    public void execAnalysiMain(HashMap<String, Object> paraMap) throws Exception {
+    public void execAnalysiMain(HashMap<String, String> paraMap) throws Exception {
 
         String analysisDateStr = (String) paraMap.get(LogAnalysisUtil.PARAM_KEY_ANALYSISDATE);
         LogVarParser varParser = new LogVarParser(paraMap);
