@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import com.changyou.loganalysis.LogAnalysisUtil;
+import com.changyou.loganalysis.tool.VarParser;
 
 public class LogGroup extends LogEntity {
     protected String filePattern;
@@ -17,9 +18,9 @@ public class LogGroup extends LogEntity {
     }
 
     @Override
-    public File[] getLogFiles(String parentPath) {
+    public File[] getLogFiles(String parentPath, VarParser parser) {
         File dirFile = new File(parentPath + "/" + dir);
-        final String resolvedFilePattern = LogAnalysisUtil.parseLogFilename(filePattern);
+        final String resolvedFilePattern = LogAnalysisUtil.parseLogFilename(filePattern, parser);
         File[] files = dirFile.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {

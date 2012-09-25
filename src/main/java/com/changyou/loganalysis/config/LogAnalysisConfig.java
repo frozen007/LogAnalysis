@@ -5,18 +5,24 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.changyou.loganalysis.LogAnalysisUtil;
 
 public class LogAnalysisConfig {
+
+    private static Logger logger = Logger.getLogger(LogAnalysisConfig.class);
 
     private String scriptExec = "";
     private String logScript = "";
     private String errScript = "";
     private String reportPath = "report";
     private int threadPoolSize = 20;
+    private String mongodbHost = "localhost";
+    private int mongodbPort = 27017;
     private HashMap<String, ProfileConfig> profileMap = new HashMap<String, ProfileConfig>();
     private ArrayList<LogConfig> logConfigList = new ArrayList<LogConfig>();
-    private LinkedHashMap<String, LogEntity> logEntityMap = new LinkedHashMap<String, LogEntity>();
+    public LinkedHashMap<String, LogEntity> logEntityMap = new LinkedHashMap<String, LogEntity>();
 
     public String getScriptExec() {
         return scriptExec;
@@ -48,6 +54,18 @@ public class LogAnalysisConfig {
     public void setThreadPoolSize(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
     }
+    public String getMongodbHost() {
+        return mongodbHost;
+    }
+    public void setMongodbHost(String mongodbHost) {
+        this.mongodbHost = mongodbHost;
+    }
+    public int getMongodbPort() {
+        return mongodbPort;
+    }
+    public void setMongodbPort(int mongodbPort) {
+        this.mongodbPort = mongodbPort;
+    }
 
     public HashMap<String, ProfileConfig> getProfiles() {
         return profileMap;
@@ -63,12 +81,13 @@ public class LogAnalysisConfig {
     
     public void addLogConfig(LogConfig lc) {
         this.logConfigList.add(lc);
-        int counter = logEntityMap.size();
         for (LogEntity entity : lc.getLogEntities()) {
-            String uniqueID = String.valueOf(counter);
+            String memo = entity.getMemo();
+            long hash = memo.hashCode();
+            String uniqueID = hash > 0 ? String.valueOf(hash) : "A" + String.valueOf(hash);
             entity.setUniqueID(uniqueID);
             this.logEntityMap.put(uniqueID, entity);
-            counter++;
+            logger.debug("uniqueID=" + uniqueID + ",memo=" + memo);
         }
     }
 

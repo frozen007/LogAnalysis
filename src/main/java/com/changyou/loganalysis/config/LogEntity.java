@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import com.changyou.loganalysis.LogAnalysisUtil;
+import com.changyou.loganalysis.tool.VarParser;
 
 public abstract class LogEntity {
 
@@ -80,11 +81,11 @@ public abstract class LogEntity {
         this.uniqueID = uniqueID;
     }
 
-    public abstract File[] getLogFiles(String parentPath);
+    public abstract File[] getLogFiles(String parentPath, VarParser parser);
 
-    public File[] getErrFiles(String parentPath) {
+    public File[] getErrFiles(String parentPath, VarParser parser) {
         if(!LogAnalysisUtil.isNull(errFile)) {
-            return new File[] { new File(parentPath + "/" + dir + "/" + LogAnalysisUtil.parseLogFilename(errFile)) };
+            return new File[] { new File(parentPath + "/" + dir + "/" + LogAnalysisUtil.parseLogFilename(errFile, parser)) };
         }
 
         if(LogAnalysisUtil.isNull(errFilePattern)) {
@@ -92,7 +93,7 @@ public abstract class LogEntity {
         }
 
         File dirFile = new File(parentPath + "/" + dir);
-        final String resolvedFilePattern = LogAnalysisUtil.parseLogFilename(errFilePattern);
+        final String resolvedFilePattern = LogAnalysisUtil.parseLogFilename(errFilePattern, parser);
         File[] errfiles = dirFile.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {

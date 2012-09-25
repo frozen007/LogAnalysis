@@ -3,6 +3,7 @@ package com.changyou.loganalysis.config;
 import java.io.File;
 
 import com.changyou.loganalysis.LogAnalysisUtil;
+import com.changyou.loganalysis.tool.VarParser;
 
 public class LogFile extends LogEntity {
 
@@ -16,8 +17,8 @@ public class LogFile extends LogEntity {
         this.file = file;
     }
 
-    public File[] getLogFiles(String parentPath) {
-        return new File[] { new File(parentPath + "/" + dir + "/" + LogAnalysisUtil.parseLogFilename(file)) };
+    public File[] getLogFiles(String parentPath, VarParser parser) {
+        return new File[] { new File(parentPath + "/" + dir + "/" + LogAnalysisUtil.parseLogFilename(file, parser)) };
     }
 
 }

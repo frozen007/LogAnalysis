@@ -72,6 +72,8 @@ public class ReportUtil {
 
     public static File generateAnalysisXLSReport(String xlsTemplateFile, String reportFile,
             Collection<LogStatistic> statList) throws Exception {
+        File outputFile = new File(reportFile);
+        logger.info("Generating analysis result:" + outputFile.getAbsolutePath());
         HSSFWorkbook book = new HSSFWorkbook(new FileInputStream(xlsTemplateFile));
         HSSFSheet sheet = book.getSheetAt(0);
 
@@ -137,7 +139,6 @@ public class ReportUtil {
             tempRow = sheet.getRow(rowCur);
         }
 
-        File outputFile = new File(reportFile);
         FileOutputStream output = new FileOutputStream(outputFile);
         book.write(output);
         output.close();
