@@ -9,7 +9,7 @@ public class TestAnalysisConfig extends TestCase {
     }
 
     public void test003() throws Exception {
-        LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
+        LogAnalysisConfig config = AnalysisConfigurator.getInstance("test-config.xml").getConfig();
 
         System.out.println(config);
     }

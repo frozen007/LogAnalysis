@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <log-analysis>
+    <server>
+        <port>9090</port>
+    </server>
+
+    <mongodb>
+        <host>192.168.56.101</host>
+    </mongodb>
 
     <analysis-worker>
         <script-exec>${perl.path}</script-exec>
@@ -7,8 +14,6 @@
         <err-script>${loganalysis.home}/script/erranalysis.pl</err-script>
         <report-path>${loganalysis.home}/report</report-path>
         <thread-pool-size>5</thread-pool-size>
-        <mongodb-host>192.168.56.101</mongodb-host>
-        <mongodb-port>27017</mongodb-port>
     </analysis-worker>
 
     <profile name="resin1">

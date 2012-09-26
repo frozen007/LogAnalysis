@@ -84,11 +84,20 @@ my $thr      = threads->create(
                 }
                 if ($logcoll) {
                     foreach my $log_ele ( @{$log_arr_ref} ) {
-                        my ( $action_url, $cost, $full_url ) = @{$log_ele};
+                        my ( $req_date, $action_url, $cost, $full_url ) = @{$log_ele};
 
                         #{"url"=>$self->url, "cost"=>$self->cost}
-                        $logcoll->insert(
-                            { "action_url" => $action_url, "cost" => eval($cost), "full_url" => $full_url } );
+                        eval {
+                            $logcoll->insert(
+                                {
+                                    "request_date" => $req_date,
+                                    "action_url"   => $action_url,
+                                    "cost"         => eval($cost),
+                                    "full_url"     => $full_url
+                                }
+                            );
+                        };
+
                     }
                 }
                 if ($Debug) { print "records that worker processed:", scalar( @{$log_arr_ref} ), "\n"; }
@@ -159,12 +168,6 @@ while (<LOG>) {
         $status500cnt++;
     }
 
-    my $full_url = $fieldList[$pos_url];    #with parameters
-    my $para_i = index( $full_url, '?' );
-    my $action_url = $full_url;
-    if ( $para_i > 0 ){
-        $action_url = substr( $full_url, 0, $para_i );    #excluding parameters
-    }
     my $cost = $fieldList[$pos_cost];
 
 =dispatch log record
@@ -172,7 +175,16 @@ while (<LOG>) {
 =cut
 
     if ( $cost >= @costStatConfig[$costStatRecordLevel] ) {
-        my $httplog = [ $action_url, $cost, $full_url ];
+        my $req_date   = $fieldList[$pos_date];
+        my $full_url   = $fieldList[$pos_url];      #with parameters
+        my $para_i     = index( $full_url, '?' );
+        my $action_url = $full_url;
+        if ( $para_i > 0 ) {
+            $action_url = substr( $full_url, 0, $para_i );    #excluding parameters
+        }
+
+        my $costInSec = $cost / $costUnitValue;
+        my $httplog = [ $req_date, $action_url, $costInSec, $full_url ];
         push( @{$log_arr_ref}, $httplog );
 
         if ( $totalrecord % 1000 eq 0 ) {

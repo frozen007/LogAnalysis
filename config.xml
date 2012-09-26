@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <log-analysis>
 
+    <server>
+        <port>8080</port>
+    </server>
+
+    <mongodb>
+        <host>10.127.1.172</host>
+        <port>27017</port>
+    </mongodb>
+
     <analysis-worker>
         <script-exec>${perl.path}</script-exec>
         <log-script>${loganalysis.home}/script/loganalysis.pl</log-script>

@@ -26,9 +26,12 @@
 
 日志所属日期：${analysisdate}，更多信息请看附件${resultfile}。
 
+查看耗时3秒及以上url统计请访问：http://10.127.64.43:8080/serverlist
 
 Updates:
 v1.2 2012-09-13 增加Excel表格报告格式
+
+v2.0 2012-09-26 增加统计耗时3秒及以上请求url功能
             </message>
         </mail>
     </target>

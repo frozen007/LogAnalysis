@@ -2,11 +2,14 @@ package com.changyou.loganalysis.server.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 
 import com.changyou.loganalysis.LogAnalysisUtil;
 import com.changyou.loganalysis.MongoDBManager;
@@ -19,12 +22,14 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 
 public class ServerListServlet extends HttpServlet {
+    private static Logger logger = Logger.getLogger(ServerListServlet.class);
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         String analysisdate = request.getParameter("analysisdate");
         if (analysisdate == null) {
             analysisdate = LogAnalysisUtil.getPreAnalysisDate();
         }
+        logger.info("[" + new Date() + "] incoming request ip=" + request.getRemoteAddr() + " analysisdate=" + analysisdate);
         DB db = MongoDBManager.getInstance().getLogDB();
         LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
         ArrayList<LogCollection> colList = new ArrayList<LogCollection>();

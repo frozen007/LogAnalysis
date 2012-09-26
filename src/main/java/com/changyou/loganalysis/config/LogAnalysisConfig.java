@@ -18,6 +18,7 @@ public class LogAnalysisConfig {
     private String errScript = "";
     private String reportPath = "report";
     private int threadPoolSize = 20;
+    private int serverPort = 8080;
     private String mongodbHost = "localhost";
     private int mongodbPort = 27017;
     private HashMap<String, ProfileConfig> profileMap = new HashMap<String, ProfileConfig>();
@@ -53,6 +54,12 @@ public class LogAnalysisConfig {
     }
     public void setThreadPoolSize(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
+    }
+    public int getServerPort() {
+        return serverPort;
+    }
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
     }
     public String getMongodbHost() {
         return mongodbHost;

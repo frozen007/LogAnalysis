@@ -30,7 +30,7 @@ public class ServerStatisticServlet extends HttpServlet {
                                               new BasicDBObject("_id", "$action_url")
                                                         .append("cnt", new BasicDBObject("$sum", 1))
                                                         .append("avg", new BasicDBObject("$avg", "$cost")));
-        AggregationOutput aggOut = dbc.aggregate(obj, new BasicDBObject().append("$sort", new BasicDBObject("_id", 1)));
+        AggregationOutput aggOut = dbc.aggregate(obj, new BasicDBObject().append("$sort", new BasicDBObject("avg", -1)));
 
         ArrayList<StatisticResult> resultList = new ArrayList<StatisticResult>();
         Iterator<DBObject> itO = aggOut.results().iterator();

@@ -30,7 +30,10 @@ public class LogAnalysisMain {
         init(paraMap);
 
         if (paraMap.containsKey(LogAnalysisUtil.PARAM_KEY_DAEMON)) {
-            LogAnalysisServer server = new LogAnalysisServer();
+            LogAnalysisServer server = new LogAnalysisServer(AnalysisConfigurator
+                                                                                 .getInstance()
+                                                                                 .getConfig()
+                                                                                 .getServerPort());
             server.startServer();
         } else {
             try {
