@@ -29,7 +29,6 @@ public class ServerListServlet extends HttpServlet {
         if (analysisdate == null) {
             analysisdate = LogAnalysisUtil.getPreAnalysisDate();
         }
-        logger.info("[" + new Date() + "] incoming request ip=" + request.getRemoteAddr() + " analysisdate=" + analysisdate);
         DB db = MongoDBManager.getInstance().getLogDB();
         LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
         ArrayList<LogCollection> colList = new ArrayList<LogCollection>();

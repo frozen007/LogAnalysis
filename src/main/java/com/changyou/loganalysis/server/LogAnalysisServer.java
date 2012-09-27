@@ -1,9 +1,12 @@
 package com.changyou.loganalysis.server;
 
 import java.net.URL;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
+import org.mortbay.jetty.NCSARequestLog;
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.handler.RequestLogHandler;
 import org.mortbay.jetty.webapp.WebAppContext;
 
 public class LogAnalysisServer {
@@ -32,6 +35,17 @@ public class LogAnalysisServer {
         } else {
             String webappPath = warUrl.toExternalForm();
             logger.info("loading webapp:"+webappPath);
+
+            RequestLogHandler logHandler = new RequestLogHandler();
+            NCSARequestLog requestLog = new NCSARequestLog();
+            requestLog.setFilename(System.getProperty("loganalysis.home")+"/log/request.yyyy_mm_dd.log");
+            requestLog.setFilenameDateFormat("yyyy_MM_dd");
+            requestLog.setLogLatency(true);
+            requestLog.setAppend(true);
+            requestLog.setLogTimeZone(TimeZone.getDefault().getID());
+            logHandler.setRequestLog(requestLog);
+
+            server.addHandler(logHandler);
             server.addHandler(new WebAppContext(webappPath, "/"));
             server.start();
         }
