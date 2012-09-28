@@ -5,7 +5,7 @@
     </server>
 
     <mongodb>
-        <host>192.168.56.101</host>
+        <host>10.127.1.172</host>
     </mongodb>
 
     <analysis-worker>

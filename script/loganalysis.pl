@@ -178,6 +178,9 @@ while (<LOG>) {
         my $req_date   = $fieldList[$pos_date];
         my $full_url   = $fieldList[$pos_url];      #with parameters
         my $para_i     = index( $full_url, '?' );
+        if ( $para_i <=0 ) {
+            $para_i    = index( $full_url, '%3F' );
+        }
         my $action_url = $full_url;
         if ( $para_i > 0 ) {
             $action_url = substr( $full_url, 0, $para_i );    #excluding parameters

@@ -1,15 +1,9 @@
 package com.changyou.loganalysis.server.servlet;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
 
 import com.changyou.loganalysis.LogAnalysisUtil;
 import com.changyou.loganalysis.MongoDBManager;
@@ -21,8 +15,7 @@ import com.changyou.loganalysis.server.bean.LogCollection;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 
-public class ServerListServlet extends HttpServlet {
-    private static Logger logger = Logger.getLogger(ServerListServlet.class);
+public class ServerListServlet extends BaseServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         String analysisdate = request.getParameter("analysisdate");
@@ -43,14 +36,9 @@ public class ServerListServlet extends HttpServlet {
                 colList.add(lc);
             }
         }
-        request.setAttribute("logcollections", colList);
-        try {
-            request.getRequestDispatcher("/WEB-INF/serverlist.jsp").forward(request, response);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        request.setAttribute("analysisdate", analysisdate);
+        request.setAttribute("logcollectionList", colList);
+        this.dispatch("/WEB-INF/serverlist.jsp", request, response);
 
     }
 }

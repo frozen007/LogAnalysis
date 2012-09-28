@@ -3,8 +3,8 @@ package com.changyou.loganalysis.server.bean;
 public class StatisticResult {
 
     private String requestUrl;
-    private String count;
-    private String avgCost;
+    private long count;
+    private double avgCost;
 
     public String getRequestUrl() {
         return requestUrl;
@@ -12,16 +12,16 @@ public class StatisticResult {
     public void setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
     }
-    public String getCount() {
+    public long getCount() {
         return count;
     }
-    public void setCount(String count) {
+    public void setCount(long count) {
         this.count = count;
     }
-    public String getAvgCost() {
+    public double getAvgCost() {
         return avgCost;
     }
-    public void setAvgCost(String avgCost) {
+    public void setAvgCost(double avgCost) {
         this.avgCost = avgCost;
     }
 }
