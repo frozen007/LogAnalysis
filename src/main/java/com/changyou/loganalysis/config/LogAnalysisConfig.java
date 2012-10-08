@@ -91,7 +91,7 @@ public class LogAnalysisConfig {
         for (LogEntity entity : lc.getLogEntities()) {
             String memo = entity.getMemo();
             long hash = memo.hashCode();
-            String uniqueID = hash > 0 ? String.valueOf(hash) : "A" + String.valueOf(hash);
+            String uniqueID = hash > 0 ? String.valueOf(hash) : "N" + String.valueOf(-hash);
             entity.setUniqueID(uniqueID);
             this.logEntityMap.put(uniqueID, entity);
             logger.debug("uniqueID=" + uniqueID + ",memo=" + memo);
