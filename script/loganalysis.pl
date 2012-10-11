@@ -17,6 +17,10 @@ my $MongoCollection = "logstat";
 my $Debug          = 0;
 my $LogDetailDebug = 0;
 
+my $costKeyLen          = 4;
+my $costStatRecordLevel = 2;
+my @costStatConfig      = ( 0, 1, 3, 10 );
+
 =options
 #LogFormat      -format="xxxxxx"
 
@@ -38,6 +42,7 @@ GetOptions(
     'mongohost=s' => \$MongoHost,
     'mongoport=s' => \$MongoPort,
     'mongocol=s'  => \$MongoCollection,
+    'reclevel=i'  => \$costStatRecordLevel,
     'debug'       => \$Debug,
     'logdebug'    => \$LogDetailDebug
 );
@@ -117,10 +122,6 @@ if ($Debug) {
     }
     print "\n";
 }
-
-my $costKeyLen          = 4;
-my $costStatRecordLevel = 2;
-my @costStatConfig      = ( 0, 1, 3, 10 );
 
 =LogCostUnit
 # us=microsecond
