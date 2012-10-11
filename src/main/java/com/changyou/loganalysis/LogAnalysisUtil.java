@@ -125,4 +125,13 @@ public class LogAnalysisUtil {
         }
         return sbuf.toString();
     }
+
+    public static int parseInt(String str, int def) {
+        try{
+            return Integer.parseInt(str);
+        } catch(Exception e) {
+            
+        }
+        return def;
+    }
 }

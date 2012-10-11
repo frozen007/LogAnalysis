@@ -1,12 +1,16 @@
+body {
+	margin: 50px;
+}
+
 .number {
-	text-align : right;
+	text-align: right;
 }
 
 .text {
-	text-align : left;
+	text-align: left;
 }
 
 .align-center {
-    margin : 0 auto;
-    text-align : center;
+	margin: 0 auto;
+	text-align: center;
 }
