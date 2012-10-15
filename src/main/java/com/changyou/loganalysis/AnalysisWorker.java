@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import com.changyou.loganalysis.config.AnalysisConfigurator;
+import com.changyou.loganalysis.config.LogEntity;
 
 public abstract class AnalysisWorker implements Runnable {
     private static Logger logger = Logger.getLogger(AnalysisWorker.class);
@@ -14,11 +15,11 @@ public abstract class AnalysisWorker implements Runnable {
     protected static String SCRIPT_EXEC = AnalysisConfigurator.getInstance().getConfig().getScriptExec();
 
     
-    protected String servername;
+    protected LogEntity logentity;
     protected String file;
 
-    public AnalysisWorker(String servername, String file) {
-        this.servername = servername;
+    public AnalysisWorker(LogEntity logentity, String file) {
+        this.logentity = logentity;
         this.file = file;
     }
 
@@ -47,7 +48,7 @@ public abstract class AnalysisWorker implements Runnable {
 
             }
 
-            LogAnalysisMonitor.getInstance().addLogStatistic(servername, resultMap);
+            LogAnalysisMonitor.getInstance().addLogStatistic(logentity, resultMap);
 
             logger.info("Analysis completed for file:" + file);
         } catch (Exception e) {

@@ -1,0 +1,48 @@
+<web-app version="2.5">
+
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+        <param-value>ApplicationResources</param-value>
+    </context-param>
+    <!-- Fallback locale if no bundles found for browser's preferred locale -->
+    <!-- Force a single locale using param-name 'javax.servlet.jsp.jstl.fmt.locale' -->
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
+        <param-value>zh_CN</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
+        <param-value>zh_CN</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>HelloServlet</servlet-name>
+        <servlet-class>com.changyou.loganalysis.server.servlet.HelloServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ServerListServlet</servlet-name>
+        <servlet-class>com.changyou.loganalysis.server.servlet.ServerListServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ServerStatisticServlet</servlet-name>
+        <servlet-class>com.changyou.loganalysis.server.servlet.ServerStatisticServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HelloServlet</servlet-name>
+        <url-pattern>/hello</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ServerListServlet</servlet-name>
+        <url-pattern>/serverlist</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ServerStatisticServlet</servlet-name>
+        <url-pattern>/serverstat</url-pattern>
+    </servlet-mapping>
+
+</web-app>

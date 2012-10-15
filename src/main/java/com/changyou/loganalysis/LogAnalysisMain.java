@@ -1,11 +1,8 @@
 package com.changyou.loganalysis;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,79 +16,102 @@ import com.changyou.loganalysis.config.LogAnalysisConfig;
 import com.changyou.loganalysis.config.LogConfig;
 import com.changyou.loganalysis.config.LogEntity;
 import com.changyou.loganalysis.config.ProfileConfig;
+import com.changyou.loganalysis.server.LogAnalysisServer;
+import com.changyou.loganalysis.tool.LogVarParser;
+import com.mongodb.DB;
 
 public class LogAnalysisMain {
     private static Logger logger = Logger.getLogger(LogAnalysisMain.class);
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
     public static void main(String[] args) throws Exception {
 
-        LogAnalysisUtil.parseParam(args);
+        HashMap<String, String> paraMap = LogAnalysisUtil.parseParam(args);
 
-        try {
-            LogAnalysisMain main = new LogAnalysisMain();
-            main.execAnalysiMain();
-        } catch (Exception e) {
-            logger.error("error when execute analysis.", e);
+        init(paraMap);
+
+        if (paraMap.containsKey(LogAnalysisUtil.PARAM_KEY_DAEMON)) {
+            LogAnalysisServer server = new LogAnalysisServer(AnalysisConfigurator
+                                                                                 .getInstance()
+                                                                                 .getConfig()
+                                                                                 .getServerPort());
+            server.startServer();
+        } else {
+            try {
+                LogAnalysisMain main = new LogAnalysisMain();
+                main.execAnalysiMain(paraMap);
+            } catch (Exception e) {
+                logger.error("error when execute analysis.", e);
+            }
+            System.exit(0);
         }
 
-        System.exit(0);
     }
 
-    public void execAnalysiMain() throws Exception {
-        Date analysisDate = null;
-
-        String analysisDateStr = System.getProperty(LogAnalysisUtil.PARAM_KEY_ANALYSISDATE);
-        try {
-            analysisDate = sdf.parse(analysisDateStr);
-        } catch (ParseException e) {
-            logger.error("Error when parse analysis date:" + analysisDateStr, e);
-        }
-
-        LogAnalysisConfig config = null;
-        String configFile = System.getProperty(LogAnalysisUtil.PARAM_KEY_ANALYSISCONFIG);
+    public static void init(HashMap<String, String> paraMap) {
+        String configFile = (String) paraMap.get(LogAnalysisUtil.PARAM_KEY_ANALYSISCONFIG);
         if (configFile != null) {
-            config = AnalysisConfigurator.getInstance(configFile).getConfig();
+            AnalysisConfigurator.getInstance(configFile);
         } else {
-            config = AnalysisConfigurator.getInstance().getConfig();
+            AnalysisConfigurator.getInstance();
         }
+    }
+
+    public void execAnalysiMain(HashMap<String, String> paraMap) throws Exception {
+
+        String analysisDateStr = (String) paraMap.get(LogAnalysisUtil.PARAM_KEY_ANALYSISDATE);
+        LogVarParser varParser = new LogVarParser(paraMap);
+        LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
 
         int threadpoolSize = config.getThreadPoolSize();
         ExecutorService executor = Executors.newFixedThreadPool(threadpoolSize);
 
         ArrayList<AnalysisWorker> workerList = new ArrayList<AnalysisWorker>();
 
+        DB logdb = null;
+        try {
+            logdb = MongoDBManager.getInstance().getLogDB();
+        } catch (Exception e) {
+            logger.error("error when get logdb from MongoDB", e);
+        }
         long totalFileLength = 0;
         long beginTime = System.currentTimeMillis();
         HashMap<String, ProfileConfig> profileMap = config.getProfiles();
         for (LogConfig logConfig : config.getLogConfigList()) {
             ProfileConfig pc = profileMap.get(logConfig.getProfile());
-            for (LogEntity log : logConfig.getLogEntities()) {
+            for (LogEntity logentity : logConfig.getLogEntities()) {
 
-                String logformat = LogAnalysisUtil.isNull(log.getLogFormat()) ? pc.getLogFormat() : log.getLogFormat();
-                String logseparator = LogAnalysisUtil.isNull(log.getLogSeparator()) ? pc.getLogSeparator()
-                        : log.getLogSeparator();
-                String logcostunit = LogAnalysisUtil.isNull(log.getLogCostunit()) ? pc.getLogCostunit()
-                        : log.getLogCostunit();
+                String logformat = LogAnalysisUtil.isNull(logentity.getLogFormat()) ? pc.getLogFormat()
+                        : logentity.getLogFormat();
+                String logseparator = LogAnalysisUtil.isNull(logentity.getLogSeparator()) ? pc.getLogSeparator()
+                        : logentity.getLogSeparator();
+                String logcostunit = LogAnalysisUtil.isNull(logentity.getLogCostunit()) ? pc.getLogCostunit()
+                        : logentity.getLogCostunit();
 
-                File[] logfiles = log.getLogFiles(logConfig.getParentPath());
+                String logCollectionName = logentity.getLogCollectionName(analysisDateStr);
+
+                // clear collection
+                if (logdb != null) {
+                    logdb.getCollection(logCollectionName).drop();
+                }
+
+                File[] logfiles = logentity.getLogFiles(logConfig.getParentPath(), varParser);
                 if (logfiles == null || logfiles.length == 0) {
-                    logger.info("log file not exists for :" + log.getMemo());
+                    logger.info("log file not exists for :" + logentity.getMemo());
                 } else {
                     for (File logfile : logfiles) {
 
                         String logfileStr = logfile.getAbsolutePath();
                         logfileStr = logfileStr.replace('\\', '/');
                         if (!logfile.exists() || logfile.isDirectory()) {
-                            logger.info("log file not exists:" + logfileStr + " for " + log.getMemo());
+                            logger.info("log file not exists:" + logfileStr + " for " + logentity.getMemo());
                             continue;
                         }
 
-                        totalFileLength +=logfile.length();
+                        totalFileLength += logfile.length();
                         AnalysisWorker worker = new LogAnalysisWorker(
-                                                                      log.getMemo(),
+                                                                      logentity,
                                                                       logfileStr,
+                                                                      logCollectionName,
                                                                       logformat,
                                                                       logseparator,
                                                                       logcostunit);
@@ -99,19 +119,19 @@ public class LogAnalysisMain {
 
                     }
 
-                    File[] errFiles = log.getErrFiles(logConfig.getParentPath());
+                    File[] errFiles = logentity.getErrFiles(logConfig.getParentPath(), varParser);
                     if (errFiles == null || errFiles.length == 0) {
-                        logger.info("no error file found for :" + log.getMemo());
+                        logger.info("no error file found for :" + logentity.getMemo());
                     } else {
                         for (File errFile : errFiles) {
                             String errfileStr = errFile.getAbsolutePath().replace('\\', '/');
                             if (!errFile.exists() || errFile.isDirectory()) {
-                                logger.info("err file not exists:" + errfileStr + " for " + log.getMemo());
+                                logger.info("err file not exists:" + errfileStr + " for " + logentity.getMemo());
                                 continue;
                             }
 
-                            totalFileLength +=errFile.length();
-                            AnalysisWorker worker = new ErrAnalysisWorker(log.getMemo(), errfileStr);
+                            totalFileLength += errFile.length();
+                            AnalysisWorker worker = new ErrAnalysisWorker(logentity, errfileStr);
                             workerList.add(worker);
                         }
                     }
@@ -138,17 +158,17 @@ public class LogAnalysisMain {
         Properties props = new Properties();
         props.put("analysisdate", analysisDateStr);
 
-        String reportFileName = "analysis_" + sdf.format(analysisDate);
+        String reportFileName = "analysis_" + analysisDateStr;
         try {
-            File csvReportFile = ReportUtil
-                                      .generateAnalysisCSVReport(
-                                                                 config.getReportPath() + "/" + reportFileName + ".csv",
-                                                                 statList);
+            File csvReportFile = ReportUtil.generateAnalysisCSVReport(config.getReportPath() + "/" + reportFileName
+                    + ".csv", statList);
 
-            File xlsReportFile = ReportUtil.generateAnalysisXLSReport(
-                                                 config.getReportPath() + "/analysis_template.xls",
-                                                 config.getReportPath() + "/" + reportFileName + ".xls",
-                                                 statList);
+            File xlsReportFile = ReportUtil
+                                           .generateAnalysisXLSReport(
+                                                                      config.getReportPath() + "/analysis_template.xls",
+                                                                      config.getReportPath() + "/" + reportFileName
+                                                                              + ".xls",
+                                                                      statList);
 
             props.put("resultfile.path", csvReportFile.getAbsolutePath() + "," + xlsReportFile.getAbsolutePath());
             props.put("resultfile", csvReportFile.getName() + "," + xlsReportFile.getName());

@@ -7,6 +7,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.log4j.Logger;
 
+import com.changyou.loganalysis.config.LogEntity;
+
 public class LogAnalysisMonitor {
     private static Logger logger = Logger.getLogger(LogAnalysisMonitor.class);
 
@@ -51,14 +53,15 @@ public class LogAnalysisMonitor {
         }
     }
 
-    public void addLogStatistic(String servername, HashMap<String, String> resultMap) {
-        LogStatistic statistic = statisticMap.get(servername);
+    public void addLogStatistic(LogEntity logentity, HashMap<String, String> resultMap) {
+        String uniqueID = logentity.getUniqueID();
+        LogStatistic statistic = statisticMap.get(uniqueID);
         if (statistic == null) {
             synchronized (statisticMap) {
-                statistic = statisticMap.get(servername);
+                statistic = statisticMap.get(uniqueID);
                 if (statistic == null) {
-                    statistic = new LogStatistic(servername, resultMap);
-                    statisticMap.put(servername, statistic);
+                    statistic = new LogStatistic(logentity.getMemo(), resultMap);
+                    statisticMap.put(uniqueID, statistic);
                     return;
                 }
             }

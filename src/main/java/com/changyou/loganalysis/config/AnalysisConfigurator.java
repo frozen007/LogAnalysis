@@ -62,9 +62,12 @@ public class AnalysisConfigurator {
     protected LogAnalysisConfig digestConfig(String configFile) throws Exception {
         Digester d = new Digester();
         d.addObjectCreate("log-analysis", "com.changyou.loganalysis.config.LogAnalysisConfig");
+        d.addSetNestedProperties("log-analysis/server", new String[] { "port" }, new String[] { "serverPort" });
+        d.addSetNestedProperties("log-analysis/mongodb", new String[] { "host", "port" }, new String[] { "mongodbHost",
+                "mongodbPort" });
         d.addSetNestedProperties("log-analysis/analysis-worker", new String[] { "script-exec", "log-script",
-                "err-script", "report-path", "thread-pool-size" }, new String[] { "scriptExec", "logScript",
-                "errScript", "reportPath", "threadPoolSize" });
+                "err-script", "report-path", "thread-pool-size", "mongodb-host", "mongodb-port" }, new String[] {
+                "scriptExec", "logScript", "errScript", "reportPath", "threadPoolSize", "mongodbHost", "mongodbPort" });
 
         String pattern = "log-analysis/profile";
         d.addObjectCreate(pattern, "com.changyou.loganalysis.config.ProfileConfig");

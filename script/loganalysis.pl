@@ -1,29 +1,118 @@
-require ("parsingformat.pl");
+use threads;
+use threads::shared;
+use Thread::Queue;
+use MongoDB;
+use Getopt::Long;
+require("parsingformat.pl");
 
-my $LogFile=shift;
-my $LogFormat=shift;
-my $LogSeparator=shift;
-my $LogCostUnit=shift;
+my $LogFormat    = "%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot";
+my $LogSeparator = " ";
+my $LogCostUnit  = "us";
 
-#$LogFile="D:/mydoc/work/loganalisys/log/resinlog_spr/64_128/access.log.cost";
-#$ErrLogFile="D:/mydoc/work/loganalisys/log/resinlog_spr/64_128/stderr.log";
-#$Debug=1;
+#default MongoDB options
+my $MongoHost       = "localhost";
+my $MongoPort       = 27017;
+my $MongoCollection = "logstat";
 
-#$LogFormat="%host %other %other %time1 %methodurl %code %bytesd %refererquot %otherquot %otherquot %otherquot %otherquot %otherquot %otherquot %costquot";
-#$LogCostUnit="s";
+my $Debug          = 0;
+my $LogDetailDebug = 0;
 
-if($LogFormat eq '') {
-    $LogFormat="%host %other %other %time1 %methodurl %code %cost %bytesd %otherquot %otherquot";
-}
-if($LogSeparator eq '') {
-    $LogSeparator=" ";
-}
-if($LogCostUnit eq '') {
-    $LogCostUnit="us";
-}
+my $costKeyLen          = 4;
+my $costStatRecordLevel = 2;
+my @costStatConfig      = ( 0, 1, 3, 10 );
 
-&DefinePerlParsingFormat($LogFormat, $LogSeparator);
+=options
+#LogFormat      -format="xxxxxx"
 
+#LogSeparator   -sep=" "
+
+#LogCostUnit    -cu=us
+
+#MongDB Option
+    -mongohost  ip
+    -mongoport  port
+    -mongocol   collections
+
+=cut
+
+GetOptions(
+    'format=s'    => \$LogFormat,
+    'sep=s'       => \$LogSeparator,
+    'cu=s'        => \$LogCostUnit,
+    'mongohost=s' => \$MongoHost,
+    'mongoport=s' => \$MongoPort,
+    'mongocol=s'  => \$MongoCollection,
+    'reclevel=i'  => \$costStatRecordLevel,
+    'debug'       => \$Debug,
+    'logdebug'    => \$LogDetailDebug
+);
+
+my $LogFile = shift;
+
+=log thread
+#initialize a queue and a thread for recording log to db
+=cut
+
+my $LogQueue = Thread::Queue->new();
+my $thr      = threads->create(
+    sub {
+        my $conn;
+        my $logdb;
+        my $logcoll;
+        eval {
+            $conn    = MongoDB::Connection->new( host => ${MongoHost}, port => ${MongoPort} );
+            $logdb   = $conn->logdb;
+            $logcoll = $logdb->get_collection($MongoCollection);
+        };
+        my $canwork = 1;
+      THREAD_WHILE: while ($canwork) {
+            if ($Debug) { print "worker idle...\n"; }
+            my @log_arr_ref_list = [];
+            {
+                lock($LogQueue);
+                my $pendingCnt = $LogQueue->pending();
+
+                if ( $pendingCnt > 0 ) {
+                    @log_arr_ref_list = $LogQueue->dequeue_nb($pendingCnt);
+                }
+                else {
+                    cond_wait($LogQueue);
+                    next THREAD_WHILE;
+                }
+
+            }
+            foreach my $log_arr_ref (@log_arr_ref_list) {
+                if ( scalar( @{$log_arr_ref} ) eq 0 ) {
+                    if ($Debug) { print "no log worker halted...\n"; }
+                    $canwork = 0;
+                    last THREAD_WHILE;
+                }
+                if ($Debug) { print "ready to insert to db...\n"; }
+                if ($logcoll) {
+                    foreach my $log_ele ( @{$log_arr_ref} ) {
+                        my ( $req_date, $action_url, $cost, $full_url ) = @{$log_ele};
+
+                        #{"url"=>$self->url, "cost"=>$self->cost}
+                        $logcoll->insert(
+                            {
+                                "request_date" => $req_date,
+                                "action_url"   => $action_url,
+                                "cost"         => eval($cost),
+                                "full_url"     => $full_url
+                            }
+                        );
+                    }
+                }
+                if ($Debug) { print "records that worker processed:", scalar( @{$log_arr_ref} ), "\n"; }
+            }
+        }
+        if ($logcoll) {
+            $logcoll->ensure_index( { "cost" => 1 } );
+        }
+    }
+);
+
+&DefinePerlParsingFormat( $LogFormat, $LogSeparator );
 if ($Debug) {
     print "\npos_code:$pos_code\n";
     print "pos_cost:$pos_cost\n";
@@ -34,35 +123,41 @@ if ($Debug) {
     print "\n";
 }
 
-
-my $costKeyLen = 4;
-
-my @costStatConfig = ();
-#####LogCostUnit#####
+=LogCostUnit
 # us=microsecond
 # ms=millisecond
 # s=second
-#####################
-if($LogCostUnit eq 'us') {
-    @costStatConfig = (0, 1000000, 3000000, 10000000); #microsecond
-} elsif($LogCostUnit eq 'ms') {
-    @costStatConfig = (0, 1000, 3000, 10000); #millisecond
-} else {
-    @costStatConfig = (0, 1, 3, 10); #millisecond
+=cut
+
+my $costUnitValue = 1;
+if ( $LogCostUnit eq 'us' ) {
+    $costUnitValue = 1000000;
+}
+elsif ( $LogCostUnit eq 'ms' ) {
+    $costUnitValue = 1000;
+}
+else {
+    $costUnitValue = 1;
 }
 
-my @costKeyList = ("cost0_1s", "cost1_3s", "cost3_10s", "cost10s");
+for my $config_id ( 0 .. $#costStatConfig ) {
+    @costStatConfig[$config_id] *= $costUnitValue;
+}
 
-my %costmap = ();
-my $totalrecord=0;
-my $status500cnt=0;
+my @costKeyList = ( "cost0_1s", "cost1_3s", "cost3_10s", "cost10s" );
 
-open(LOG, $LogFile) || die $!;
+my %costmap      = ();
+my $totalrecord  = 0;
+my $status500cnt = 0;
+
+my $log_arr_ref = [];
+
+open( LOG, $LogFile ) || die $!;
 binmode LOG;
-while(<LOG>) {
+while (<LOG>) {
     my $line = $_;
     chomp $line;
-    if($line eq '') {
+    if ( $line eq '' ) {
         next;
     }
     $totalrecord++;
@@ -70,13 +165,41 @@ while(<LOG>) {
     @fieldList = map( /$PerlParsingFormat/, $line );
 
     my $code = $fieldList[$pos_code];
-    if($code eq '500') {
+    if ( $code eq '500' ) {
         $status500cnt++;
     }
 
-    $cost = $fieldList[$pos_cost];
+    my $cost = $fieldList[$pos_cost];
 
-    if($Debug) {
+=dispatch log record
+#    my $httplog = HttpRequestLog->new(url=>$url, cost=>$cost);
+=cut
+
+    if ( $cost >= @costStatConfig[$costStatRecordLevel] ) {
+        my $req_date = $fieldList[$pos_date];
+        my $full_url = $fieldList[$pos_url];      #with parameters
+        my $para_i   = index( $full_url, '?' );
+        if ( $para_i <= 0 ) {
+            $para_i = index( $full_url, '%3F' );
+        }
+        my $action_url = $full_url;
+        if ( $para_i > 0 ) {
+            $action_url = substr( $full_url, 0, $para_i );    #excluding parameters
+        }
+
+        my $costInSec = $cost / $costUnitValue;
+        my $httplog = [ $req_date, $action_url, $costInSec, $full_url ];
+        push( @{$log_arr_ref}, $httplog );
+
+        if ( $totalrecord % 1000 eq 0 ) {
+            $LogQueue->enqueue($log_arr_ref);
+            lock($LogQueue);
+            $log_arr_ref = [];
+            cond_signal($LogQueue);
+        }
+    }
+
+    if ($LogDetailDebug) {
         print "fieldList:";
         foreach my $f (@fieldList) {
             print $f, "\t";
@@ -88,26 +211,32 @@ while(<LOG>) {
     my $costCnt;
     my $costKey;
 
-    foreach my $index (0..$costKeyLen-1) {
-        if($index < $costKeyLen-1) {
-            if($cost >=@costStatConfig[$index] && $cost <@costStatConfig[$index+1]) {
+    foreach my $index ( 0 .. $costKeyLen - 1 ) {
+        if ( $index < $costKeyLen - 1 ) {
+            if ( $cost >= @costStatConfig[$index] && $cost < @costStatConfig[ $index + 1 ] ) {
+
                 #match
-            } else {
+            }
+            else {
                 next;
             }
-        } else {
-            if($cost >=@costStatConfig[$index]) {
+        }
+        else {
+            if ( $cost >= @costStatConfig[$index] ) {
+
                 #match
-            } else {
+            }
+            else {
                 next;
             }
         }
 
         $costKey = @costKeyList[$index];
         $costCnt = $costmap{$costKey};
-        if($costCnt eq '') {
+        if ( $costCnt eq '' ) {
             $costCnt = 1;
-        } else {
+        }
+        else {
             $costCnt++;
         }
         $costmap{$costKey} = $costCnt;
@@ -118,11 +247,25 @@ while(<LOG>) {
 
 }
 
+=final dispatch
+=cut
+
+{
+    $LogQueue->enqueue($log_arr_ref);
+    $log_arr_ref = [];
+    $LogQueue->enqueue($log_arr_ref);
+    lock($LogQueue);
+    cond_signal($LogQueue);
+}
+
+if ($Debug) { print "waiting for worker finish\n"; }
+$thr->join();
+
 #output the result
 print "logfile=$LogFile\n";
 print "totalrecord=$totalrecord\n";
 print "status500cnt=$status500cnt\n";
-for my $key (keys %costmap) {
+for my $key ( keys %costmap ) {
     print "$key=$costmap{$key}\n";
 }
 
