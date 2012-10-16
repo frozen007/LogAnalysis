@@ -5,13 +5,14 @@
     </server>
 
     <mongodb>
-        <host>10.127.1.172</host>
+        <host>192.168.56.101</host>
     </mongodb>
 
     <analysis-worker>
         <script-exec>${perl.path}</script-exec>
         <log-script>${loganalysis.home}/script/loganalysis.pl</log-script>
         <err-script>${loganalysis.home}/script/erranalysis.pl</err-script>
+        <rec-level>1</rec-level>
         <report-path>${loganalysis.home}/report</report-path>
         <thread-pool-size>5</thread-pool-size>
     </analysis-worker>

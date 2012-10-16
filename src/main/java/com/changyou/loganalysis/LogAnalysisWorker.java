@@ -11,6 +11,7 @@ public class LogAnalysisWorker extends AnalysisWorker {
     private static Logger logger = Logger.getLogger(LogAnalysisWorker.class);
 
     private static String LOG_SCRIPT = AnalysisConfigurator.getInstance().getConfig().getLogScript();
+    private static String REC_LEVEL = AnalysisConfigurator.getInstance().getConfig().getRecLevel();
 
     private static String MONGODB_HOST = AnalysisConfigurator.getInstance().getConfig().getMongodbHost();
     private static int MONGODB_PORT = AnalysisConfigurator.getInstance().getConfig().getMongodbPort();
@@ -37,7 +38,7 @@ public class LogAnalysisWorker extends AnalysisWorker {
         logger.debug("file=" + file + ", logformat=\"" + logformat + "\", logseperator=\"" + logseperator
                 + "\", logcostunit=" + logcostunit);
         String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, "-format", logformat, "-sep", logseperator, "-cu",
-                logcostunit, "-mongohost", MONGODB_HOST, "-mongoport", String.valueOf(MONGODB_PORT), "-mongocol",
+                logcostunit, "-reclevel", REC_LEVEL, "-mongohost", MONGODB_HOST, "-mongoport", String.valueOf(MONGODB_PORT), "-mongocol",
                 logCollection, file };
         Process process = null;
         try {

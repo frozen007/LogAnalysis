@@ -66,8 +66,8 @@ public class AnalysisConfigurator {
         d.addSetNestedProperties("log-analysis/mongodb", new String[] { "host", "port" }, new String[] { "mongodbHost",
                 "mongodbPort" });
         d.addSetNestedProperties("log-analysis/analysis-worker", new String[] { "script-exec", "log-script",
-                "err-script", "report-path", "thread-pool-size", "mongodb-host", "mongodb-port" }, new String[] {
-                "scriptExec", "logScript", "errScript", "reportPath", "threadPoolSize", "mongodbHost", "mongodbPort" });
+                "err-script", "rec-level", "report-path", "thread-pool-size", "mongodb-host", "mongodb-port" }, new String[] {
+                "scriptExec", "logScript", "errScript", "recLevel", "reportPath", "threadPoolSize", "mongodbHost", "mongodbPort" });
 
         String pattern = "log-analysis/profile";
         d.addObjectCreate(pattern, "com.changyou.loganalysis.config.ProfileConfig");

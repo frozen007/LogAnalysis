@@ -16,6 +16,7 @@ public class LogAnalysisConfig {
     private String scriptExec = "";
     private String logScript = "";
     private String errScript = "";
+    private String recLevel = "2";
     private String reportPath = "report";
     private int threadPoolSize = 20;
     private int serverPort = 8080;
@@ -42,6 +43,12 @@ public class LogAnalysisConfig {
     }
     public void setErrScript(String errScript) {
         this.errScript = LogAnalysisUtil.substVars(errScript);
+    }
+    public String getRecLevel() {
+        return recLevel;
+    }
+    public void setRecLevel(String recLevel) {
+        this.recLevel = recLevel;
     }
     public String getReportPath() {
         return reportPath;

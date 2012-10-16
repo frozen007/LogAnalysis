@@ -14,7 +14,8 @@
         <script-exec>${perl.path}</script-exec>
         <log-script>${loganalysis.home}/script/loganalysis.pl</log-script>
         <err-script>${loganalysis.home}/script/erranalysis.pl</err-script>
-        <report-path>report</report-path>
+        <rec-level>1</rec-level>
+        <report-path>${loganalysis.home}/report</report-path>
         <thread-pool-size>30</thread-pool-size>
     </analysis-worker>
 
