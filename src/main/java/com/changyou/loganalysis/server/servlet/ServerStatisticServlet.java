@@ -51,7 +51,7 @@ public class ServerStatisticServlet extends BaseServlet {
             condObj.put("$gte", queryMinCost);
         }
         if (queryMaxCost > 0 && queryMaxCost <= QUERY_COST_RANGE[1]) {
-            condObj.put("$lte", queryMaxCost);
+            condObj.put("$lt", queryMaxCost);
         }
 
         BasicDBObject matchObj = null;
