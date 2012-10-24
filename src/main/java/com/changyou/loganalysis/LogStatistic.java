@@ -39,6 +39,17 @@ public class LogStatistic {
 
     }
 
+    public synchronized void mergeResult(LogStatistic stat) {
+        totalrecord += stat.totalrecord;
+        cost0_1s += stat.cost0_1s;
+        cost1_3s += stat.cost1_3s;
+        cost3_10s += stat.cost3_10s;
+        cost10s += stat.cost10s;
+        status500 += stat.status500;
+        exceptioncnt += stat.exceptioncnt;
+        
+    }
+
     private long parseLong(String str, long defaultL) {
         long result = defaultL;
         try {

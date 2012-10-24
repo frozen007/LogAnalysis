@@ -191,6 +191,9 @@
         <log file="64_13/host.access.log_${date:yyyyMMdd}" err-file="" memo="wgapi通用对接_64_13"/>
         <log file="154_145/host.access.log_${date:yyyyMMdd}" err-file="" memo="wgapi通用对接_154_145"/>
 
+        <!--页游二期-->
+        <log dir="64_13" file="wan.access.log_${date:yyyyMMdd}" err-file="" memo="页游二期_64_13"/>
+        <log dir="154_145" file="wan.access.log_${date:yyyyMMdd}" err-file="" memo="页游二期_154_145"/>
     </log-config>
 
 </log-analysis>
