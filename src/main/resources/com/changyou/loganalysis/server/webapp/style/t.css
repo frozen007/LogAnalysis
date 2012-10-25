@@ -1,5 +1,6 @@
 body {
 	margin: 50px;
+	font: 80.5% "Trebuchet MS", sans-serif;
 }
 
 .number {
@@ -14,3 +15,23 @@ body {
 	margin: 0 auto;
 	text-align: center;
 }
+
+th.sortable a {
+    background-repeat: no-repeat;
+	background-image: url(/img/arrow_off.png);
+    background-position: right;
+    list-style-type: none;
+    display: block;
+    text-align: left;
+    padding: 10px;    
+}
+
+th.order1 a {
+    background-image: url(/img/arrow_up.png);
+}
+
+th.order2 a {
+    background-image: url(/img/arrow_down.png);
+
+}
+

@@ -23,7 +23,7 @@ $(function() {
                 maxvalue = maxvalue + "s";
             }
 
-            $("#amount").val(minvalue + "s ~ " + maxvalue);
+            $("#amount").html(minvalue + "s ~ " + maxvalue);
         }
     });
 
@@ -34,12 +34,51 @@ $(function() {
     } else {
     	currentmax = currentmax + "s";
     }
-    $("#amount").val(currentmin + "s ~ " + currentmax);
+    $("#amount").html(currentmin + "s ~ " + currentmax);
+
+    $( "#querybtn" ).button({
+        icons: {
+            primary: "ui-icon-gear"
+        },
+    });
+
+    function doQuery(sortoption) {
+        $("input[name='mincost']").val($("#slider").slider("values", 0));
+        $("input[name='maxcost']").val($("#slider").slider("values", 1));
+        $("input[name='sortoption']").val(sortoption);
+        $("#queryform").submit();
+    }
 
     $("#querybtn").click(function(){
-    	$("input[name='mincost']").val($("#slider").slider("values", 0));
-    	$("input[name='maxcost']").val($("#slider").slider("values", 1));
-    	$("#queryform").submit();
+    	doQuery("");
+    });
+
+    $("a[id='columnurl']").click(function(){
+    	<c:if test="${not (sortoptionMap._id eq '2')}">
+            doQuery('_id^2');
+    	</c:if>
+        <c:if test="${sortoptionMap._id eq '2'}">
+            doQuery('_id^1');
+        </c:if>
+
+    });
+
+    $("a[id='columncount']").click(function(){
+        <c:if test="${not (sortoptionMap.cnt eq '2')}">
+            doQuery('cnt^2');
+        </c:if>
+        <c:if test="${sortoptionMap.cnt eq '2'}">
+            doQuery('cnt^1');
+        </c:if>
+    });
+
+    $("a[id='columnavgcost']").click(function(){
+        <c:if test="${not (sortoptionMap.avg eq '2')}">
+            doQuery('avg^2');
+        </c:if>
+        <c:if test="${sortoptionMap.avg eq '2'}">
+            doQuery('avg^1');
+        </c:if>
     });
 
 });
@@ -51,30 +90,34 @@ $(function() {
     <center>
         <table cellpadding="10px">
             <tr>
-                <td colspan="2">
+                <td colspan="2" valign="middle">
                     <p style="border: 0; color: #f6931f; font-weight: bold;">
                         <b><fmt:message key="serverstat.query.condition.memo"/>:</b>
-                        <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;" />
+                        <!-- <input type="text" id="amount" disabled="disabled" style="border: 0; color: #f6931f; font-weight: bold;" />-->
+                        <label id="amount" style="border: 0; color: #f6931f; font-weight: bold;"></label>
                     </p>
                     <div id="slider"></div>
                 </td>
-                <td valign="bottom" align="right">
+                <td valign="bottom" align="right" valign="bottom">
                     <form id="queryform" action="/serverstat" method="get">
                         <input type="hidden" name="logcollection" value="${logcollection}"/>
                         <input type="hidden" name="loguniqueid" value="${loguniqueid}"/>
                         <input type="hidden" name="mincost" value="${mincost}"/>
                         <input type="hidden" name="maxcost" value="${maxcost}"/>
-                        <input id="querybtn" type="button" value="query"/>
+                        <input type="hidden" name="sortoption" value=""/>
                     </form>
+                    <button id="querybtn">GO</button>
                 </td>
             </tr>
         </table>
         <table border="2">
-            <tr>
-                <th><fmt:message key="serverstat.table.urlcolumn" /></th>
-                <th><fmt:message key="serverstat.table.countcolumn" /></th>
-                <th><fmt:message key="serverstat.table.avgcostcolumn" /></th>
-            </tr>
+            <thead>
+                <tr>
+                    <th class="sortable order${sortoptionMap._id}"><a id="columnurl" href="javascript:void(0);"><fmt:message key="serverstat.table.urlcolumn" /></a></th>
+                    <th class="sortable order${sortoptionMap.cnt}"><a id="columncount" href="javascript:void(0);"><fmt:message key="serverstat.table.countcolumn" /></a></th>
+                    <th class="sortable order${sortoptionMap.avg}"><a id="columnavgcost" href="javascript:void(0);"><fmt:message key="serverstat.table.avgcostcolumn" /></a></th>
+                </tr>
+            </thead>
 
             <c:forEach items="${statisticresultList}" var="result">
                 <tr>
