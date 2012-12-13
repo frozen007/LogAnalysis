@@ -1,9 +1,11 @@
 package com.changyou.loganalysis.mongo;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.changyou.loganalysis.MongoDBManager;
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -45,5 +47,22 @@ public class TestMongo extends TestCase {
             
         }
         
+    }
+
+    public void test003() {
+        String upDate = "20121021";
+        DB logdb = MongoDBManager.getInstance().getLogDB();
+        Set<String> colNames = logdb.getCollectionNames();
+        for(String colName : colNames) {
+            if(colName.startsWith("log2012")) {
+                String strLogDate = colName.substring(3, colName.indexOf('.'));
+                if(strLogDate.compareTo(upDate) <=0) {
+                    System.out.println(colName + " dropped");
+                    //logdb.getCollection(colName).dropIndexes();
+                    //logdb.getCollection(colName).drop();
+                }
+            }
+            
+        }
     }
 }

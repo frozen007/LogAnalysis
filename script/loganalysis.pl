@@ -16,6 +16,7 @@ my $MongoCollection = "logstat";
 
 my $Debug          = 0;
 my $LogDetailDebug = 0;
+my $OutputLine     = 0;
 
 my $costKeyLen          = 4;
 my $costStatRecordLevel = 2;
@@ -43,6 +44,7 @@ GetOptions(
     'mongoport=s' => \$MongoPort,
     'mongocol=s'  => \$MongoCollection,
     'reclevel=i'  => \$costStatRecordLevel,
+    'outputLine'  => \$OutputLine,
     'debug'       => \$Debug,
     'logdebug'    => \$LogDetailDebug
 );
@@ -176,6 +178,10 @@ while (<LOG>) {
 =cut
 
     if ( $cost >= @costStatConfig[$costStatRecordLevel] ) {
+        if ( $OutputLine ) {
+            print $line, "\n";
+        }
+
         my $req_date = $fieldList[$pos_date];
         my $full_url = $fieldList[$pos_url];      #with parameters
         my $para_i   = index( $full_url, '?' );
