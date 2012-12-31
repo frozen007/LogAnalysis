@@ -7,7 +7,7 @@
             <from address="zhaomingyu@cyou-inc.com" />
             <replyto address="zhaomingyu@cyou-inc.com" />
             <to address="zhaomingyu@cyou-inc.com" />
-            <message>技术开发部各站点日志分析结果
+            <message>日志分析结果
 
 日志所属日期：${analysisdate}，更多信息请看附件${resultfile}。
             </message>

@@ -1,31 +1,35 @@
 #!/bin/sh
-LOGANALYSIS_HOME=/home/webadmin/loganalysis
-JAVA_HOME=/usr/local/java/jdk
+PRG="$0"
+while [ -h "$PRG" ] ; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+PRGDIR=`dirname "$PRG"`
+
+LOGANALYSIS_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
+
+if [ -z "$JAVA_HOME" ]; then
+  echo "JAVA_HOME is not set"
+fi
+
+JVM_EXECUTABLE="$JAVA_HOME"/bin/java
+if [ ! -r "$JVM_EXECUTABLE" ]; then
+  echo "$JVM_EXECUTABLE not exists"
+fi
+
+if [ -z "$PERL_HOME" ]; then
+  echo "PERL_HOME not exists"
+fi
 PERL_PATH=/home/webadmin/perl-5.16/bin/perl
+
+#SET CLASSPATH
 CLASSPATH=.
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/activation-1.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/ant-1.8.3.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/ant-javamail-1.8.3.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/ant-launcher-1.8.3.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/asm-3.3.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/cglib-2.2.2.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/commons-beanutils-1.8.3.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/commons-codec-1.5.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/commons-digester3-3.2.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/commons-jexl-2.1.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/commons-logging-1.1.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/core-3.1.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/ecj-3.5.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/jetty-6.1.26.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/jetty-util-6.1.26.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/jsp-2.1-glassfish-2.1.v20091210.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/jsp-api-2.1-glassfish-2.1.v20091210.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/jstl-1.2.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/junit-3.8.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/log4j-1.2.14.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/loganalysis-2.2.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/mail-1.4.5.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/mongo-java-driver-2.9.1.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/poi-3.8.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/servlet-api-2.5-20081211.jar
-CLASSPATH=$CLASSPATH:$LOGANALYSIS_HOME/libs/standard-1.1.2.jar
+LS_LIBS=`ls $LOGANALYSIS_HOME/libs`
+for jar in $LS_LIBS; do
+  CLASSPATH=$CLASSPATH:"$LOGANALYSIS_HOME/libs/"$jar
+done

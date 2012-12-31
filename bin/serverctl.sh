@@ -1,8 +1,19 @@
 #!/bin/sh
-source env.sh
-cd $LOGANALYSIS_HOME
+PRG="$0"
+while [ -h "$PRG" ] ; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+PRGDIR=`dirname "$PRG"`
 
-SERVER_PID=server.pid
+exec $PRGDIR/env.sh
+
+SERVER_PID=$LOGANALYSIS_HOME/server.pid
 
 usage()
 {
@@ -26,10 +37,12 @@ case "$ACTION" in
             else
                 # process not running, but PID file was not deleted
                 echo "Server was not stopped correctly. Removing old pid file"
-                rm $SERVER_PID
+                rm -f $SERVER_PID
             fi
         fi;
-        nohup $JAVA_HOME/bin/java -Dsend.mail.script=sendmail.xml -Dperl.path=${PERL_PATH} -Dloganalysis.home=$LOGANALYSIS_HOME -cp $CLASSPATH com.changyou.loganalysis.LogAnalysisMain -daemon > server.out &
+        nohup $JVM_EXECUTABLE -Dsend.mail.script=$LOGANALYSIS_HOME/etc/sendmail.xml \
+            -Dperl.path=${PERL_PATH} -Dloganalysis.home=$LOGANALYSIS_HOME \
+            -cp $CLASSPATH com.myz.loganalysis.LogAnalysisMain -daemon > $LOGANALYSIS_HOME/server.out &
         PID=$!
         echo $PID > $SERVER_PID
         echo "PID=$PID"

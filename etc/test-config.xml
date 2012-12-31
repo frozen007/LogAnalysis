@@ -67,7 +67,7 @@
 
     <log-config name="resin1-resinlog" profile="resin1" parent-path="D:/mydoc/work/loganalisys/log/resinlog">
 
-        <log dir="64_126" file="access.log.${date:yyyyMMdd}" err-file-pattern="stderr-${date:yyyy_MM_dd}.log*" memo="客服后台系统_64_126" />
+        <log dir="64_126" file="access.log.${date:yyyyMMdd}" err-file-pattern="stderr-${date:yyyy_MM_dd}.log*" memo="64_126" />
     </log-config>
 
 </log-analysis>

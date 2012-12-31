@@ -8,39 +8,11 @@
             <from address="zhaomingyu@cyou-inc.com" />
             <replyto address="zhaomingyu@cyou-inc.com" />
             <to address="zhaomingyu@cyou-inc.com" />
-            <bcc address="liuxinchun@cyou-inc.com" />
-            <bcc address="yuzhushi@cyou-inc.com" />
-            <bcc address="zhangjiayu@cyou-inc.com" />
-            <bcc address="duansujie@cyou-inc.com" />
-            <bcc address="hurenbing@cyou-inc.com" />
-            <bcc address="biyutong@cyou-inc.com" />
-            <bcc address="lijing_js@cyou-inc.com" />
-            <bcc address="gesiyang@cyou-inc.com" />
-            <bcc address="licaihong@cyou-inc.com"/>
-            <bcc address="mayalin@cyou-inc.com" />
-            <bcc address="mazhen@cyou-inc.com" />
-            <bcc address="zhangchao_js@cyou-inc.com" />
-            <bcc address="zhaoxuecheng@cyou-inc.com" />
-            <bcc address="pengwenlong@cyou-inc.com" />
-            <bcc address="kangshuai@cyou-inc.com" />
-            <bcc address="wudan_js@cyou-inc.com"/>
-            <bcc address="yanjianmei@cyou-inc.com"/>
-            <message>技术开发部各站点日志分析结果
+            <message>日志分析结果
 
 日志所属日期：${analysisdate}，更多信息请看附件${resultfile}。
 
-查看耗时3秒及以上url统计请访问：http://10.127.64.43:8080/serverlist
-
-Updates:
-v2.2 2012-10-25 在统计详细页面增加针对请求URL，总数，平均耗时的排序功能 - inspired by kangshuai@cyou-inc.com
-
-v2.1 2012-10-11 增加按请求耗时区间段统计功能
-
-v2.0 2012-09-26 增加统计耗时3秒及以上请求url功能
-
-v1.2 2012-09-13 增加Excel表格报告格式
-
-
+查看url统计请访问：http://127.0.0.1:8080/serverlist
             </message>
         </mail>
     </target>
