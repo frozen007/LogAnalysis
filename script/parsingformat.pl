@@ -335,6 +335,13 @@ sub DefinePerlParsingFormat {
 				push @fieldlib, 'cost';
 				$PerlParsingFormat .= "([^$LogSeparatorWithoutStar]+)";
 			}
+			elsif ( $f =~ /%weirdCost1/ ) {
+			    #like 1/1023517  seconds/microseconds
+			    $pos_cost = $i;
+			    $i++;
+			    push @fieldlib, 'cost';
+			    $PerlParsingFormat .= "[^$LogSeparatorWithoutStar]+/([^$LogSeparatorWithoutStar]+)";
+			}
 			elsif ( $f =~ /%costquot$/ ) {
 				$pos_cost = $i;
 				$i++;

@@ -40,7 +40,7 @@ case "$ACTION" in
                 rm -f $SERVER_PID
             fi
         fi;
-        nohup $JVM_EXECUTABLE -Dsend.mail.script=$LOGANALYSIS_HOME/etc/sendmail.xml \
+        nohup $JVM_EXECUTABLE -Dsend.mail.script=$LOGANALYSIS_HOME/etc/sendmail.xml -Djava.io.tmpdir=$LOGANALYSIS_HOME/tmp \
             -Dperl.path=${PERL_PATH} -Dloganalysis.home=$LOGANALYSIS_HOME \
             -cp $CLASSPATH com.myz.loganalysis.LogAnalysisMain -daemon > $LOGANALYSIS_HOME/server.out &
         PID=$!
