@@ -30,6 +30,11 @@
         <servlet-class>com.myz.loganalysis.server.servlet.ServerStatisticServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>RealtimeAnalysisServlet</servlet-name>
+        <servlet-class>com.myz.loganalysis.server.servlet.RealtimeAnalysisServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>HelloServlet</servlet-name>
         <url-pattern>/hello</url-pattern>
@@ -43,6 +48,11 @@
     <servlet-mapping>
         <servlet-name>ServerStatisticServlet</servlet-name>
         <url-pattern>/serverstat</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RealtimeAnalysisServlet</servlet-name>
+        <url-pattern>/realanalysis</url-pattern>
     </servlet-mapping>
 
 </web-app>

@@ -62,6 +62,9 @@ public class LogAnalysisUtil {
             }
         }
 
+        if (currentParaName != null) {
+            paraMap.put(currentParaName, "true");
+        }
         return paraMap;
     }
 
@@ -126,4 +129,5 @@ public class LogAnalysisUtil {
         }
         return def;
     }
+
 }

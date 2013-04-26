@@ -76,7 +76,9 @@ public class LogAnalysisMain {
         DB logdb = null;
         try {
             logdb = MongoDBManager.getInstance().getLogDB();
+            logdb.getCollectionNames();
         } catch (Exception e) {
+            logdb = null;
             logger.error("error when get logdb from MongoDB", e);
         }
         long totalFileLength = 0;
@@ -120,7 +122,8 @@ public class LogAnalysisMain {
                                                                       logCollectionName,
                                                                       logformat,
                                                                       logseparator,
-                                                                      logcostunit);
+                                                                      logcostunit,
+                                                                      null);
                         workerList.add(worker);
 
                     }

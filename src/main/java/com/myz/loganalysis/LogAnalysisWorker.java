@@ -22,23 +22,26 @@ public class LogAnalysisWorker extends AnalysisWorker {
     private String logformat;
     private String logseperator;
     private String logcostunit;
+    private String logreclevel = REC_LEVEL;
 
     public LogAnalysisWorker(LogEntity logentity, String file, String logCollection, String logformat,
-            String logseperator, String logcostunit) {
+            String logseperator, String logcostunit, String logreclevel) {
         super(logentity, file);
         this.logCollection = logCollection;
         this.logformat = logformat;
         this.logseperator = logseperator;
         this.logcostunit = logcostunit;
-
+        if (logreclevel != null) {
+            this.logreclevel = logreclevel;
+        }
     }
 
     @Override
-    protected Process createAnalysisProcess() throws Exception {
+    public Process createAnalysisProcess() throws Exception {
         logger.debug("file=" + file + ", logformat=\"" + logformat + "\", logseperator=\"" + logseperator
                 + "\", logcostunit=" + logcostunit);
         String[] cmdArr = new String[] { SCRIPT_EXEC, LOG_SCRIPT, "-format", logformat, "-sep", logseperator, "-cu",
-                logcostunit, "-reclevel", REC_LEVEL, "-mongohost", MONGODB_HOST, "-mongoport", String.valueOf(MONGODB_PORT), "-mongocol",
+                logcostunit, "-reclevel", logreclevel, "-mongohost", MONGODB_HOST, "-mongoport", String.valueOf(MONGODB_PORT), "-mongocol",
                 logCollection, file };
         Process process = null;
         try {

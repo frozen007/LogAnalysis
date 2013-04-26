@@ -23,7 +23,7 @@ public abstract class AnalysisWorker implements Runnable {
         this.file = file;
     }
 
-    protected abstract Process createAnalysisProcess() throws Exception;
+    public abstract Process createAnalysisProcess() throws Exception;
     
     public void run() {
         

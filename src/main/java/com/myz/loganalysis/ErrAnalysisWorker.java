@@ -16,7 +16,7 @@ public class ErrAnalysisWorker extends AnalysisWorker {
     }
 
     @Override
-    protected Process createAnalysisProcess() throws Exception {
+    public Process createAnalysisProcess() throws Exception {
 
         Process process = null;
         String[] cmdArr = new String[] { SCRIPT_EXEC, ERR_SCRIPT, file};

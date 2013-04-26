@@ -17,6 +17,12 @@ public abstract class LogEntity {
     protected String errFilePattern;
     protected String uniqueID;
 
+    protected LogConfig logConfig;
+
+    public LogConfig getLogConfig() {
+        return this.logConfig;
+    }
+
     public String getDir() {
         return dir;
     }

@@ -49,8 +49,8 @@ public class TestMongo extends TestCase {
         
     }
 
-    public void test003() {
-        String upDate = "20121021";
+    public void test003() {/*
+        String upDate = "20121231";
         DB logdb = MongoDBManager.getInstance().getLogDB();
         Set<String> colNames = logdb.getCollectionNames();
         for(String colName : colNames) {
@@ -58,11 +58,11 @@ public class TestMongo extends TestCase {
                 String strLogDate = colName.substring(3, colName.indexOf('.'));
                 if(strLogDate.compareTo(upDate) <=0) {
                     System.out.println(colName + " dropped");
-                    //logdb.getCollection(colName).dropIndexes();
-                    //logdb.getCollection(colName).drop();
+                    logdb.getCollection(colName).dropIndexes();
+                    logdb.getCollection(colName).drop();
                 }
             }
             
-        }
+        }*/
     }
 }

@@ -12,13 +12,16 @@ import junit.framework.TestCase;
 public class TestAnalysisConfig extends TestCase {
 
     public void test001() {
-        
+        String out = LogAnalysisUtil.substWildcards("host.access.log.${date:yyyyMMdd}*dd");
+        System.out.println(out);
     }
 
     public void test003() throws Exception {
+        /*
         LogAnalysisConfig config = AnalysisConfigurator.getInstance("test-config.xml").getConfig();
 
         System.out.println(config);
+        */
     }
 
     public void test004() {
@@ -29,10 +32,11 @@ public class TestAnalysisConfig extends TestCase {
     }
 
     public void test005() {
+        /*
         LogAnalysisConfig config = AnalysisConfigurator.getInstance().getConfig();
         for(LogEntity log : config.logEntityMap.values()) {
             System.out.println(log.uniqueID + ":" + log.memo);
-        }
+        }*/
     }
 
     public void test006() {
